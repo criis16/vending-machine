@@ -22,7 +22,7 @@ class Item
     }
 
     /**
-     * Get the value of itemId
+     * Get the domain object of itemId
      *
      * @return ItemId
      */
@@ -32,18 +32,7 @@ class Item
     }
 
     /**
-     * Set the value of itemId
-     *
-     * @param ItemId $itemId
-     * @return void
-     */
-    public function setItemId(ItemId $itemId): void
-    {
-        $this->itemId = $itemId;
-    }
-
-    /**
-     * Get the value of itemName
+     * Get the domain object of itemName
      *
      * @return ItemName
      */
@@ -53,18 +42,7 @@ class Item
     }
 
     /**
-     * Set the value of itemName
-     *
-     * @param ItemName $itemName
-     * @return void
-     */
-    public function setItemName(ItemName $itemName): void
-    {
-        $this->itemName = $itemName;
-    }
-
-    /**
-     * Get the value of itemQuantity
+     * Get the domain object of itemQuantity
      *
      * @return ItemQuantity
      */
@@ -74,34 +52,12 @@ class Item
     }
 
     /**
-     * Set the value of itemQuantity
-     *
-     * @param ItemQuantity $itemQuantity
-     * @return void
-     */
-    public function setItemQuantity(ItemQuantity $itemQuantity): void
-    {
-        $this->itemQuantity = $itemQuantity;
-    }
-
-    /**
-     * Get the value of itemPrice
+     * Get the domain object of itemPrice
      *
      * @return ItemPrice
      */
     public function getItemPrice(): ItemPrice
     {
         return $this->itemPrice;
-    }
-
-    /**
-     * Set the value of itemPrice
-     *
-     * @param ItemPrice $itemPrice
-     * @return void
-     */
-    public function setItemPrice(ItemPrice $itemPrice): void
-    {
-        $this->itemPrice = $itemPrice;
     }
 }

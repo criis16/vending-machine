@@ -16,7 +16,7 @@ class Status
     }
 
     /**
-     * Get the value of statusId
+     * Get the domain object of statusId
      *
      * @return StatusId
      */
@@ -26,34 +26,12 @@ class Status
     }
 
     /**
-     * Set the value of statusId
-     *
-     * @param StatusId $statusId
-     * @return void
-     */
-    public function setStatusId(StatusId $statusId): void
-    {
-        $this->statusId = $statusId;
-    }
-
-    /**
-     * Get the value of statusBalance
+     * Get the domain object of statusBalance
      *
      * @return StatusBalance
      */
     public function getStatusBalance(): StatusBalance
     {
         return $this->statusBalance;
-    }
-
-    /**
-     * Set the value of statusBalance
-     *
-     * @param StatusBalance $statusBalance
-     * @return void
-     */
-    public function setStatusBalance(StatusBalance $statusBalance): void
-    {
-        $this->statusBalance = $statusBalance;
     }
 }
