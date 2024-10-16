@@ -4,7 +4,6 @@ namespace App\Domain\Coin;
 
 class Coin
 {
-
     private CoinId $coinId;
     private CoinValue $coinValue;
     private CoinQuantity $coinQuantity;
@@ -32,9 +31,10 @@ class Coin
     /**
      * Set the value of coinId
      *
+     * @param CoinId $coinId
      * @return void
      */
-    public function setCoinId($coinId): void
+    public function setCoinId(CoinId $coinId): void
     {
         $this->coinId = $coinId;
     }
@@ -52,9 +52,10 @@ class Coin
     /**
      * Set the value of coinValue
      *
+     * @param CoinValue $coinValue
      * @return void
      */
-    public function setCoinValue($coinValue): void
+    public function setCoinValue(CoinValue $coinValue): void
     {
         $this->coinValue = $coinValue;
     }
@@ -72,9 +73,10 @@ class Coin
     /**
      * Set the value of coinQuantity
      *
+     * @param CoinQuantity $coinQuantity
      * @return void
      */
-    public function setCoinQuantity($coinQuantity): void
+    public function setCoinQuantity(CoinQuantity $coinQuantity): void
     {
         $this->coinQuantity = $coinQuantity;
     }
