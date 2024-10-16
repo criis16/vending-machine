@@ -16,7 +16,7 @@ class ItemPrice
      *
      * @return float
      */
-    public function getPrice(): float
+    public function getValue(): float
     {
         return $this->price;
     }

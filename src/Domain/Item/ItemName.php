@@ -16,7 +16,7 @@ class ItemName
      *
      * @return string
      */
-    public function getName(): string
+    public function getValue(): string
     {
         return $this->name;
     }
