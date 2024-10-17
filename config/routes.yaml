@@ -1,3 +1,8 @@
 controllers:
   resource: ../src/Controller/
   type: attribute
+
+insert_coin:
+  path: /insert_coin
+  controller: App\Infrastructure\Status\InsertBalanceController::insertBalance
+  methods: ['POST']
