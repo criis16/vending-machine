@@ -8,11 +8,20 @@ class Status
     private StatusBalance $statusBalance;
 
     public function __construct(
-        StatusId $statusId,
         StatusBalance $statusBalance
     ) {
-        $this->statusId = $statusId;
         $this->statusBalance = $statusBalance;
+    }
+
+    /**
+     * Sets the status id
+     *
+     * @param StatusId $statusId
+     * @return void
+     */
+    public function setStatusId(StatusId $statusId): void
+    {
+        $this->statusId = $statusId;
     }
 
     /**
