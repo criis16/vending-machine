@@ -22,3 +22,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    #Serivces definition
+    App\Application\Status\InsertBalance\InsertBalanceService:
+        arguments:
+            $repository: '@App\Infrastructure\Status\Repositories\DoctrineRepository'
+
+    App\Application\Status\GetBalance\GetBalanceService:
+        arguments:
+            $repository: '@App\Infrastructure\Status\Repositories\DoctrineRepository'
+
+    #Controller definition
+    App\Infrastructure\Status\InsertBalanceController:
+        tags: ["controller.service_arguments"]
+        arguments:
+            $insertBalanceService: '@App\Application\Status\InsertBalance\InsertBalanceService'
