@@ -17,7 +17,7 @@ class InsertBalanceService
     }
 
     /**
-     * Inserts a new balance coin
+     * Inserts a balance
      *
      * @param InsertBalanceRequest $request
      * @return boolean
