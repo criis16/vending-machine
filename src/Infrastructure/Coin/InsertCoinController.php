@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Status;
+namespace App\Infrastructure\Coin;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -8,10 +8,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Application\Coin\InsertCoin\InsertCoinService;
 use App\Application\Status\GetBalance\GetBalanceService;
 use App\Infrastructure\Shared\ValidateRequestDataService;
+use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Application\Status\InsertBalance\InsertBalanceService;
-use App\Infrastructure\Status\Repositories\InsertBalanceRequest;
 
-class InsertBalanceController
+class InsertCoinController
 {
     private const REQUIRED_BODY_FIELDS = [
         'coin'
@@ -19,14 +19,14 @@ class InsertBalanceController
 
     private InsertBalanceService $insertBalanceService;
     private GetBalanceService $getBalanceService;
-    private InsertBalanceRequest $request;
+    private InsertCoinRequest $request;
     private ValidateRequestDataService $validator;
     private InsertCoinService $insertCoinService;
 
     public function __construct(
         InsertBalanceService $insertBalanceService,
         GetBalanceService $getBalanceService,
-        InsertBalanceRequest $request,
+        InsertCoinRequest $request,
         ValidateRequestDataService $validator,
         InsertCoinService $insertCoinService
     ) {
@@ -43,7 +43,7 @@ class InsertBalanceController
      * @param Request $request
      * @return JsonResponse
      */
-    public function insertBalance(Request $request): JsonResponse
+    public function insertCoin(Request $request): JsonResponse
     {
         $isCoinSaved = false;
         $isBalanceSaved = false;

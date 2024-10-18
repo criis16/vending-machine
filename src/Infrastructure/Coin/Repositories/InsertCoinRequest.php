@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Infrastructure\Status\Repositories;
+namespace App\Infrastructure\Coin\Repositories;
 
-class InsertBalanceRequest
+class InsertCoinRequest
 {
     private ?float $coin;
 

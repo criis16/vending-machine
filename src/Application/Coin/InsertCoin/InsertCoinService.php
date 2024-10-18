@@ -6,7 +6,7 @@ use App\Domain\Coin\Coin;
 use App\Domain\Coin\CoinValue;
 use App\Domain\Coin\CoinQuantity;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
-use App\Infrastructure\Status\Repositories\InsertBalanceRequest;
+use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 
 class InsertCoinService
 {
@@ -23,11 +23,11 @@ class InsertCoinService
     /**
      * Inserts a coin
      *
-     * @param InsertBalanceRequest $request
+     * @param InsertCoinRequest $request
      * @return boolean
      */
     public function execute(
-        InsertBalanceRequest $request
+        InsertCoinRequest $request
     ): bool {
         $isOperationDone = false;
         $coinQuantity = new CoinQuantity(self::INITIAL_COIN_QUANTITY);

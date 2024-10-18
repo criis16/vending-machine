@@ -4,8 +4,8 @@ namespace App\Application\Status\InsertBalance;
 
 use App\Domain\Status\Status;
 use App\Domain\Status\StatusBalance;
+use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Domain\Status\Repositories\StatusRepositoryInterface;
-use App\Infrastructure\Status\Repositories\InsertBalanceRequest;
 
 class InsertBalanceService
 {
@@ -19,11 +19,11 @@ class InsertBalanceService
     /**
      * Inserts a balance
      *
-     * @param InsertBalanceRequest $request
+     * @param InsertCoinRequest $request
      * @return boolean
      */
     public function execute(
-        InsertBalanceRequest $request
+        InsertCoinRequest $request
     ): bool {
         $statusBalance = new StatusBalance($request->getCoin());
         $statusResult = $this->repository->getStatus();
