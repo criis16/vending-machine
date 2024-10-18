@@ -24,18 +24,22 @@ class ValidateRequestDataService
             throw new RequestException(['empty_body' => 'There is not request data.']);
         }
 
-        $totalParams = 0;
         $message = [];
-
-        foreach (\array_keys($request) as $requestKey) {
-            if (!\in_array($requestKey, $requiredFields) || empty($requestKey)) {
-                $message[$requestKey] = \ucfirst($requestKey) . ' is a required field';
-            }
-            $totalParams++;
-        }
+        $requestParams = \array_keys($request);
+        $totalParams = \count($requestParams);
 
         if ($totalParams > self::MAX_ALLOWED_PARAMS) {
             $message['must_be_one'] = 'It must be only one parameter at the request data.';
+        }
+
+        foreach ($requestParams as $requestKey) {
+            if (!\in_array($requestKey, $requiredFields)) {
+                $message[$requestKey] = \ucfirst($requestKey) . ' is not a required field';
+            }
+
+            if (empty($requestKey)) {
+                $message[$requestKey] = \ucfirst($requestKey) . ' is a required field';
+            }
         }
 
         if (!empty($message)) {
