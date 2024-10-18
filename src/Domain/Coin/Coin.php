@@ -9,11 +9,9 @@ class Coin
     private CoinQuantity $coinQuantity;
 
     public function __construct(
-        CoinId $coinId,
         CoinValue $coinValue,
         CoinQuantity $coinQuantity
     ) {
-        $this->coinId = $coinId;
         $this->coinValue = $coinValue;
         $this->coinQuantity = $coinQuantity;
     }
@@ -26,6 +24,17 @@ class Coin
     public function getCoinId(): CoinId
     {
         return $this->coinId;
+    }
+
+    /**
+     * Sets the coinId
+     *
+     * @param CoinId $coinId
+     * @return void
+     */
+    public function setCoinId(CoinId $coinId): void
+    {
+        $this->coinId = $coinId;
     }
 
     /**
