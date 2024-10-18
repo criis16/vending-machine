@@ -4,5 +4,5 @@ controllers:
 
 insert_coin:
   path: /insert_coin
-  controller: App\Infrastructure\Status\InsertBalanceController::insertBalance
+  controller: App\Infrastructure\Coin\InsertCoinController::insertCoin
   methods: ['POST']

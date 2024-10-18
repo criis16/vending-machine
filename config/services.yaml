@@ -28,12 +28,8 @@ services:
         arguments:
             $repository: '@App\Infrastructure\Status\Repositories\DoctrineRepository'
 
-    App\Application\Status\GetBalance\GetBalanceService:
-        arguments:
-            $repository: '@App\Infrastructure\Status\Repositories\DoctrineRepository'
-
     #Controller definition
-    App\Infrastructure\Status\InsertBalanceController:
+    App\Infrastructure\Coin\InsertCoinController:
         tags: ["controller.service_arguments"]
         arguments:
             $insertBalanceService: '@App\Application\Status\InsertBalance\InsertBalanceService'
