@@ -40,6 +40,10 @@ class ValidateRequestDataService
             if (empty($requestKey)) {
                 $message[$requestKey] = \ucfirst($requestKey) . ' is a required field';
             }
+
+            if (!\is_numeric($request[$requestKey])) {
+                $message[$requestKey] = \ucfirst($requestKey) . ' is not a numeric value';
+            }
         }
 
         if (!empty($message)) {
