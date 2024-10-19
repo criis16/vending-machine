@@ -40,6 +40,8 @@ class InsertCoinService
         } else {
             $coin = \reset($coin);
             $coinId = $coin->getCoinId();
+            $currentCoinQuantity = $coin->getCoinQuantity();
+            $coinQuantity->setValue($currentCoinQuantity->getValue() + $coinQuantity->getValue());
             $isOperationDone = $this->repository->updateCoinQuantity($coinId, $coinQuantity);
         }
 
