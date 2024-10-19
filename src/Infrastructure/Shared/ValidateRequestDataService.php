@@ -29,8 +29,8 @@ class ValidateRequestDataService
         $requestParams = \array_keys($request);
         $totalParams = \count($requestParams);
 
-        if ($totalParams > $maxAllowedParams) {
-            $message['must_be_one'] = 'It must be only ' . $maxAllowedParams . ' parameter at the request data.';
+        if ($totalParams != $maxAllowedParams) {
+            $message['must_be_one'] = 'It must be ' . $maxAllowedParams . ' parameter at the request data.';
         }
 
         foreach ($requestParams as $requestKey) {
