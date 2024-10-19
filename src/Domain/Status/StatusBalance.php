@@ -22,4 +22,15 @@ class StatusBalance
     {
         return $this->balance;
     }
+
+    /**
+     * Set the balance value
+     *
+     * @param float $balance
+     * @return void
+     */
+    public function setValue(float $balance): void
+    {
+        $this->balance = ($balance < self::ZERO_BALANCE) ? self::ZERO_BALANCE : $balance;
+    }
 }

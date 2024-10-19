@@ -56,9 +56,7 @@ class DoctrineRepository implements CoinRepositoryInterface
         CoinQuantity $coinQuantity
     ): bool {
         $this->entityCoin = $this->entityRepository->find($coinId->getValue());
-        $this->entityCoin->setQuantity(
-            $this->entityCoin->getQuantity() + $coinQuantity->getValue()
-        );
+        $this->entityCoin->setQuantity($coinQuantity->getValue());
 
         $this->entityManager->persist($this->entityCoin);
         $this->entityManager->flush();

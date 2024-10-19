@@ -22,4 +22,15 @@ class CoinQuantity
     {
         return $this->quantity;
     }
+
+    /**
+     * Set the coin quantity value
+     *
+     * @param integer $quantity
+     * @return void
+     */
+    public function setValue(int $quantity): void
+    {
+        $this->quantity = ($quantity < self::ZERO_QUANTITY) ? self::ZERO_QUANTITY : $quantity;
+    }
 }

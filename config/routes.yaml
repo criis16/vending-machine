@@ -6,3 +6,7 @@ insert_coin:
   path: /insert_coin
   controller: App\Infrastructure\Coin\InsertCoinController::insertCoin
   methods: ['POST']
+
+return_coins:
+  path: /return_coins
+  controller: App\Infrastructure\Coin\GetCoinsBackController::getCoinsBack

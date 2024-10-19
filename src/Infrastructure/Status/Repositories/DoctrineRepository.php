@@ -48,7 +48,7 @@ class DoctrineRepository implements StatusRepositoryInterface
         StatusBalance $statusBalance
     ): bool {
         $this->entityStatus = $this->entityRepository->find($statusId->getValue());
-        $this->entityStatus->setBalance($this->entityStatus->getBalance() + $statusBalance->getValue());
+        $this->entityStatus->setBalance($statusBalance->getValue());
 
         $this->entityManager->persist($this->entityStatus);
         $this->entityManager->flush();

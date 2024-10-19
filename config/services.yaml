@@ -33,3 +33,8 @@ services:
         tags: ["controller.service_arguments"]
         arguments:
             $insertBalanceService: '@App\Application\Status\InsertBalance\InsertBalanceService'
+
+    App\Infrastructure\Coin\GetCoinsBackController:
+        tags: ["controller.service_arguments"]
+        arguments:
+            $getBalanceService: '@App\Application\Status\GetBalance\GetBalanceService'
