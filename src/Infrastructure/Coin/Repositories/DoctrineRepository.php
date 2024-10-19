@@ -29,6 +29,11 @@ class DoctrineRepository implements CoinRepositoryInterface
         $this->entityCoinAdapter = $entityCoinAdapter;
     }
 
+    public function getAllCoins(): array
+    {
+        return $this->applyEntityAdapter($this->entityRepository->findAll());
+    }
+
     public function getCoinByValue(CoinValue $coinValue): array
     {
         return $this->applyEntityAdapter(

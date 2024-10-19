@@ -10,6 +10,13 @@ use App\Domain\Coin\CoinValue;
 interface CoinRepositoryInterface
 {
     /**
+     * Returns all the coins
+     *
+     * @return array
+     */
+    public function getAllCoins(): array;
+
+    /**
      * Returns the coins by value
      *
      * @param CoinValue $coinValue
