@@ -16,7 +16,6 @@ class DoctrineRepository implements CoinRepositoryInterface
 {
     private const VALUE_FIELD = 'value';
 
-    private EntityCoin $entityCoin;
     private EntityManagerInterface $entityManager;
     private EntityRepository $entityRepository;
     private EntityCoinAdapter $entityCoinAdapter;
@@ -25,7 +24,6 @@ class DoctrineRepository implements CoinRepositoryInterface
         EntityManagerInterface $entityManager,
         EntityCoinAdapter $entityCoinAdapter
     ) {
-        $this->entityCoin = new EntityCoin();
         $this->entityManager = $entityManager;
         $this->entityRepository = $entityManager->getRepository(EntityCoin::class);
         $this->entityCoinAdapter = $entityCoinAdapter;
@@ -42,26 +40,27 @@ class DoctrineRepository implements CoinRepositoryInterface
 
     public function saveCoin(Coin $coin): bool
     {
-        $this->entityCoin->setValue($coin->getCoinValue()->getValue());
-        $this->entityCoin->setQuantity($coin->getCoinQuantity()->getValue());
+        $entityCoin = new EntityCoin();
+        $entityCoin->setValue($coin->getCoinValue()->getValue());
+        $entityCoin->setQuantity($coin->getCoinQuantity()->getValue());
 
-        $this->entityManager->persist($this->entityCoin);
+        $this->entityManager->persist($entityCoin);
         $this->entityManager->flush();
 
-        return \boolval($this->entityCoin->getId());
+        return \boolval($entityCoin->getId());
     }
 
     public function updateCoinQuantity(
         CoinId $coinId,
         CoinQuantity $coinQuantity
     ): bool {
-        $this->entityCoin = $this->entityRepository->find($coinId->getValue());
-        $this->entityCoin->setQuantity($coinQuantity->getValue());
+        $entityCoin = $this->entityRepository->find($coinId->getValue());
+        $entityCoin->setQuantity($coinQuantity->getValue());
 
-        $this->entityManager->persist($this->entityCoin);
+        $this->entityManager->persist($entityCoin);
         $this->entityManager->flush();
 
-        return \boolval($this->entityCoin->getId());
+        return \boolval($entityCoin->getId());
     }
 
     private function applyEntityAdapter(array $coins): array
