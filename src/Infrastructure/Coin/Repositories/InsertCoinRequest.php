@@ -18,9 +18,9 @@ class InsertCoinRequest
     /**
      * Get the value of coin
      *
-     * @return float
+     * @return float|null
      */
-    public function getCoin(): float
+    public function getCoin(): ?float
     {
         return $this->coin;
     }
@@ -28,7 +28,7 @@ class InsertCoinRequest
     /**
      * Set the value of coin
      *
-     * @param integer $coin
+     * @param float $coin
      * @return void
      */
     public function setCoin(float $coin): void
@@ -39,9 +39,9 @@ class InsertCoinRequest
     /**
      * Get the value of quantity
      *
-     * @return integer
+     * @return integer|null
      */
-    public function getQuantity(): int
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
