@@ -10,12 +10,10 @@ class Item
     private ItemPrice $itemPrice;
 
     public function __construct(
-        ItemId $itemId,
         ItemName $itemName,
         ItemQuantity $itemQuantity,
         ItemPrice $itemPrice
     ) {
-        $this->itemId = $itemId;
         $this->itemName = $itemName;
         $this->itemQuantity = $itemQuantity;
         $this->itemPrice = $itemPrice;
@@ -29,6 +27,17 @@ class Item
     public function getItemId(): ItemId
     {
         return $this->itemId;
+    }
+
+    /**
+     * Set the domain object of itemId
+     *
+     * @param ItemId $itemId
+     * @return void
+     */
+    public function setItemId(ItemId $itemId): void
+    {
+        $this->itemId = $itemId;
     }
 
     /**
