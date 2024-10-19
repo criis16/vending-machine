@@ -30,7 +30,8 @@ class InsertCoinService
         InsertCoinRequest $request
     ): bool {
         $isOperationDone = false;
-        $coinQuantity = new CoinQuantity(self::INITIAL_COIN_QUANTITY);
+        $quantity = (!empty($request->getQuantity())) ? $request->getQuantity() : self::INITIAL_COIN_QUANTITY;
+        $coinQuantity = new CoinQuantity($quantity);
         $coinValue = new CoinValue($request->getCoin());
         $coin = $this->repository->getCoinByValue($coinValue);
 

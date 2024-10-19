@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityRepository;
 
 class DoctrineRepository implements StatusRepositoryInterface
 {
-    private EntityStatus $entityStatus;
     private EntityManagerInterface $entityManager;
     private EntityRepository $entityRepository;
     private EntityStatusAdapter $entityStatusAdapter;
@@ -22,7 +21,6 @@ class DoctrineRepository implements StatusRepositoryInterface
         EntityManagerInterface $entityManager,
         EntityStatusAdapter $entityStatusAdapter
     ) {
-        $this->entityStatus = new EntityStatus();
         $this->entityManager = $entityManager;
         $this->entityRepository = $entityManager->getRepository(EntityStatus::class);
         $this->entityStatusAdapter = $entityStatusAdapter;
@@ -35,25 +33,26 @@ class DoctrineRepository implements StatusRepositoryInterface
 
     public function saveStatus(Status $status): bool
     {
-        $this->entityStatus->setBalance($status->getStatusBalance()->getValue());
+        $entityStatus = new EntityStatus();
+        $entityStatus->setBalance($status->getStatusBalance()->getValue());
 
-        $this->entityManager->persist($this->entityStatus);
+        $this->entityManager->persist($entityStatus);
         $this->entityManager->flush();
 
-        return \boolval($this->entityStatus->getId());
+        return \boolval($entityStatus->getId());
     }
 
     public function updateStatusBalance(
         StatusId $statusId,
         StatusBalance $statusBalance
     ): bool {
-        $this->entityStatus = $this->entityRepository->find($statusId->getValue());
-        $this->entityStatus->setBalance($statusBalance->getValue());
+        $entityStatus = $this->entityRepository->find($statusId->getValue());
+        $entityStatus->setBalance($statusBalance->getValue());
 
-        $this->entityManager->persist($this->entityStatus);
+        $this->entityManager->persist($entityStatus);
         $this->entityManager->flush();
 
-        return \boolval($this->entityStatus->getId());
+        return \boolval($entityStatus->getId());
     }
 
     private function applyEntityAdapter(array $status): array
