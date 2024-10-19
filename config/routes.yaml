@@ -10,3 +10,8 @@ insert_coin:
 return_coins:
   path: /return_coins
   controller: App\Infrastructure\Coin\GetCoinsBackController::getCoinsBack
+
+service:
+  path: /service
+  controller: App\Infrastructure\ServiceMachine\ServiceMachineController::serviceMachine
+  methods: ['POST']

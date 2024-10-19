@@ -38,3 +38,8 @@ services:
         tags: ["controller.service_arguments"]
         arguments:
             $getBalanceService: '@App\Application\Status\GetBalance\GetBalanceService'
+
+    App\Infrastructure\ServiceMachine\ServiceMachineController:
+        tags: ["controller.service_arguments"]
+        arguments:
+            $validator: '@App\Infrastructure\Shared\ValidateRequestDataService'
