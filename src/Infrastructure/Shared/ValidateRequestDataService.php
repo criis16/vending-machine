@@ -18,7 +18,8 @@ class ValidateRequestDataService
      */
     public function validate(
         array $request,
-        array $requiredFields
+        array $requiredFields,
+        int $maxAllowedParams = self::MAX_ALLOWED_PARAMS
     ): void {
         if (empty($request)) {
             throw new RequestException(['empty_body' => 'There is not request data.']);
@@ -28,8 +29,8 @@ class ValidateRequestDataService
         $requestParams = \array_keys($request);
         $totalParams = \count($requestParams);
 
-        if ($totalParams > self::MAX_ALLOWED_PARAMS) {
-            $message['must_be_one'] = 'It must be only one parameter at the request data.';
+        if ($totalParams > $maxAllowedParams) {
+            $message['must_be_one'] = 'It must be only ' . $maxAllowedParams . ' parameter at the request data.';
         }
 
         foreach ($requestParams as $requestKey) {
