@@ -26,15 +26,18 @@ class InsertBalanceService
         InsertCoinRequest $request
     ): bool {
         $statusBalance = new StatusBalance($request->getCoin());
-        $statusResult = $this->repository->getStatus();
+        $currenStatus = $this->repository->getStatus();
         $isOperationDone = false;
 
-        if (empty($statusResult)) {
+        if (empty($currenStatus)) {
             $status = new Status($statusBalance);
             $isOperationDone = $this->repository->saveStatus($status);
         } else {
-            $statusId = \reset($statusResult)->getStatusId();
-            $isOperationDone = $this->repository->updateStatusBalance($statusId, $statusBalance);
+            $currenStatus = \reset($currenStatus);
+            $statusId = $currenStatus->getStatusId();
+            $currentBalance = $currenStatus->getStatusBalance();
+            $currentBalance->setValue($currentBalance->getValue() + $statusBalance->getValue());
+            $isOperationDone = $this->repository->updateStatusBalance($statusId, $currentBalance);
         }
 
         return $isOperationDone;

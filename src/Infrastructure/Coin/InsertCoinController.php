@@ -56,13 +56,13 @@ class InsertCoinController
 
             $isCoinSaved = $this->insertCoinService->execute($this->request);
             $isBalanceSaved = $this->insertBalanceService->execute($this->request);
+
+            if ($isCoinSaved && $isBalanceSaved) {
+                $statusCode = 200;
+                $responseMessage = 'Coin has been inserted correctly';
+            }
         } catch (Exception $e) {
             $responseMessage = $e->getMessage();
-        }
-
-        if ($isCoinSaved && $isBalanceSaved) {
-            $statusCode = 200;
-            $responseMessage = 'Coin has been inserted correctly';
         }
 
         $currentBalance = $this->getBalanceService->execute();
