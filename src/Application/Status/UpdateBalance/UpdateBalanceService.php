@@ -3,10 +3,10 @@
 namespace App\Application\Status\UpdateBalance;
 
 use InvalidArgumentException;
+use App\Domain\Status\StatusId;
 use App\Domain\Status\StatusBalance;
 use App\Application\Status\GetStatus\GetStatusService;
 use App\Domain\Status\Repositories\StatusRepositoryInterface;
-use App\Domain\Status\StatusId;
 
 class UpdateBalanceService
 {

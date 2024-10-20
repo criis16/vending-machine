@@ -3,13 +3,13 @@
 namespace App\Domain\Status\Repositories;
 
 use App\Domain\Status\Status;
-use App\Domain\Status\StatusBalance;
 use App\Domain\Status\StatusId;
+use App\Domain\Status\StatusBalance;
 
 interface StatusRepositoryInterface
 {
     /**
-     * Returns the status register
+     * Returns the status
      *
      * @return array
      */
