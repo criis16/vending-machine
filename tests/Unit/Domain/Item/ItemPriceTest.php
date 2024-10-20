@@ -24,7 +24,7 @@ class ItemPriceTest extends TestCase
     {
         return [
             'positive_price_case' => self::positivePriceCase(),
-            'negative_negative_case' => self::negativePriceCase()
+            'negative_price_case' => self::negativePriceCase()
         ];
     }
 
