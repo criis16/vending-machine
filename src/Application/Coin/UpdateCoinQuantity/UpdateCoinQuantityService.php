@@ -2,10 +2,10 @@
 
 namespace App\Application\Coin\UpdateCoinQuantity;
 
-use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
 use InvalidArgumentException;
 use App\Domain\Coin\CoinQuantity;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
+use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
 
 class UpdateCoinQuantityService
 {

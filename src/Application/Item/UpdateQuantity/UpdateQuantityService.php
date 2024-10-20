@@ -2,12 +2,12 @@
 
 namespace App\Application\Item\UpdateQuantity;
 
-use App\Application\Item\GetItemByName\GetItemByNameService;
 use App\Domain\Item\ItemId;
+use InvalidArgumentException;
 use App\Domain\Item\ItemQuantity;
 use App\Domain\Item\Repositories\ItemRepositoryInterface;
 use App\Infrastructure\Item\Repositories\InsertItemRequest;
-use InvalidArgumentException;
+use App\Application\Item\GetItemByName\GetItemByNameService;
 
 class UpdateQuantityService
 {
@@ -25,6 +25,7 @@ class UpdateQuantityService
     /**
      * Updates the quantity of the item
      *
+     * @param InsertItemRequest $request
      * @param integer $quantity
      * @return boolean
      */
