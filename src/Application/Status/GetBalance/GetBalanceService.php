@@ -6,6 +6,7 @@ use App\Domain\Status\Repositories\StatusRepositoryInterface;
 
 class GetBalanceService
 {
+    private const EMPTY_BALANCE = 0.0;
     private StatusRepositoryInterface $repository;
 
     public function __construct(StatusRepositoryInterface $repository)
@@ -23,7 +24,7 @@ class GetBalanceService
         $status = $this->repository->getStatus();
 
         if (empty($status)) {
-            return 0.0;
+            return self::EMPTY_BALANCE;
         }
 
         $statusResult = \reset($status);

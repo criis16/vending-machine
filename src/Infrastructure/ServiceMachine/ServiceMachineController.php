@@ -12,6 +12,7 @@ use App\Application\Item\GetAllItems\GetAllItemsService;
 use App\Infrastructure\Shared\ValidateRequestDataService;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Infrastructure\Item\Repositories\InsertItemRequest;
+use App\Infrastructure\Shared\Exceptions\NotSavedException;
 use App\Infrastructure\Shared\Exceptions\RequestException;
 
 class ServiceMachineController
@@ -65,13 +66,11 @@ class ServiceMachineController
                 \count(self::REQUIRED_BODY_FIELDS)
             );
 
-            $areCoinsSaved = $this->saveCoins($requestBody['coins']);
-            $areItemsSaved = $this->saveItems($requestBody['items']);
+            $this->saveCoins($requestBody['coins']);
+            $this->saveItems($requestBody['items']);
 
-            if ($areCoinsSaved && $areItemsSaved) {
-                $statusCode = 200;
-                $responseMessage = 'The inserted coins and items have been saved successfully.';
-            }
+            $statusCode = 200;
+            $responseMessage = 'The inserted coins and items have been saved successfully.';
         } catch (Exception $e) {
             $responseMessage = $e->getMessage();
         }
@@ -94,7 +93,7 @@ class ServiceMachineController
      * @param array $coins
      * @return boolean
      */
-    private function saveCoins(array $coins): bool
+    private function saveCoins(array $coins): void
     {
         foreach ($coins as $coinValue => $coinQuantity) {
             if (empty($coinValue) || empty($coinQuantity)) {
@@ -106,10 +105,9 @@ class ServiceMachineController
             $isCoinSaved = $this->insertCoinService->execute($this->insertCoinRequest);
 
             if (!$isCoinSaved) {
-                return false;
+                throw new NotSavedException(['coins' => 'The inserted coins have not been saved']);
             }
         }
-        return true;
     }
 
     /**
@@ -118,7 +116,7 @@ class ServiceMachineController
      * @param array $items
      * @return boolean
      */
-    private function saveItems(array $items): bool
+    private function saveItems(array $items): void
     {
         foreach ($items as $itemName => $itemQuantity) {
             if (empty($itemName) || empty($itemQuantity)) {
@@ -130,10 +128,9 @@ class ServiceMachineController
             $isItemSaved = $this->insertItemService->execute($this->insertItemRequest);
 
             if (!$isItemSaved) {
-                return false;
+                throw new NotSavedException(['items' => 'The inserted items have not been saved']);
             }
         }
-        return true;
     }
 
     /**
@@ -146,16 +143,15 @@ class ServiceMachineController
     private function getStatusResponseMessage(array $coins, array $items): string
     {
         if (empty($coins)) {
-            $coinsMessage = 'There are no coins.';
-        } else {
-            $coinsMessage = 'Coins: ' . $this->getCoinsResponseMessage($coins);
+            throw new RequestException(['coins' => 'There are no coins']);
         }
 
         if (empty($items)) {
-            $itemsMessage = 'There are no items.';
-        } else {
-            $itemsMessage = 'Items: ' . $this->getItemsResponseMessage($items);
+            throw new RequestException(['items' => 'There are no items']);
         }
+
+        $coinsMessage = 'Coins: ' . $this->getCoinsResponseMessage($coins);
+        $itemsMessage = 'Items: ' . $this->getItemsResponseMessage($items);
 
         return $coinsMessage . ' || ' . $itemsMessage;
     }
