@@ -15,3 +15,7 @@ service:
   path: /service
   controller: App\Infrastructure\ServiceMachine\ServiceMachineController::serviceMachine
   methods: ['POST']
+
+user_score:
+  path: '/item'
+  controller: App\Infrastructure\Item\GetItemByNameController::getItem

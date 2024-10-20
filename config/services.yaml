@@ -43,3 +43,8 @@ services:
         tags: ["controller.service_arguments"]
         arguments:
             $validator: '@App\Infrastructure\Shared\ValidateRequestDataService'
+
+    App\Infrastructure\Item\GetItemByNameController:
+        tags: ["controller.service_arguments"]
+        arguments:
+            $validator: '@App\Infrastructure\Shared\ValidateRequestQueryDataService'
