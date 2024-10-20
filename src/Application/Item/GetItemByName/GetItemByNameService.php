@@ -2,12 +2,12 @@
 
 namespace App\Application\Item\GetItemByName;
 
-use App\Application\Item\Adapters\ItemAdapter;
 use App\Domain\Item\Item;
 use App\Domain\Item\ItemName;
+use InvalidArgumentException;
+use App\Application\Item\Adapters\ItemAdapter;
 use App\Domain\Item\Repositories\ItemRepositoryInterface;
 use App\Infrastructure\Item\Repositories\InsertItemRequest;
-use InvalidArgumentException;
 
 class GetItemByNameService
 {

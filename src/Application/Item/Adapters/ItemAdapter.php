@@ -9,7 +9,7 @@ class ItemAdapter
     /**
      * Adapts an Item domain object into a an array
      *
-     * @param Item $entityItem
+     * @param Item $item
      * @return array
      */
     public function adapt(
