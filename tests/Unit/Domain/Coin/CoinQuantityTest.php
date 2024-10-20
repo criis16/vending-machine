@@ -5,7 +5,7 @@ namespace Tests\Unit\Domain\Coin;
 use App\Domain\Coin\CoinQuantity;
 use PHPUnit\Framework\TestCase;
 
-class CoinVQuantityTest extends TestCase
+class CoinQuantityTest extends TestCase
 {
     private CoinQuantity $sut;
 
