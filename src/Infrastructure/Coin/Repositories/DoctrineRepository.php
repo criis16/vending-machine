@@ -2,14 +2,14 @@
 
 namespace App\Infrastructure\Coin\Repositories;
 
-use App\Application\Coin\Adapters\EntityCoinAdapter;
 use App\Domain\Coin\Coin;
 use App\Domain\Coin\CoinId;
-use App\Domain\Coin\CoinQuantity;
 use App\Domain\Coin\CoinValue;
+use App\Domain\Coin\CoinQuantity;
 use App\Entity\Coin as EntityCoin;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Application\Coin\Adapters\EntityCoinAdapter;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
 
 class DoctrineRepository implements CoinRepositoryInterface

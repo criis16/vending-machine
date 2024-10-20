@@ -57,12 +57,11 @@ class InsertCoinController
             $this->setRequestData($requestBody);
 
             $isCoinSaved = $this->insertCoinService->execute($this->request);
-            $isBalanceSaved = $this->insertBalanceService->execute($this->request);
-
             if (!$isCoinSaved) {
                 throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
             }
 
+            $isBalanceSaved = $this->insertBalanceService->execute($this->request);
             if (!$isBalanceSaved) {
                 throw new NotSavedException(['balance' => 'The inserted balance has not been saved']);
             }

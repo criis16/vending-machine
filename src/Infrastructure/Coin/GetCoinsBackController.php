@@ -6,10 +6,10 @@ use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Application\Status\GetBalance\GetBalanceService;
 use App\Application\Coin\GetCoinsBack\GetCoinsBackService;
-use App\Application\Coin\UpdateCoinQuantity\UpdateCoinQuantityService;
-use App\Application\Status\UpdateBalance\UpdateBalanceService;
-use App\Infrastructure\Shared\Exceptions\NotSavedException;
 use App\Infrastructure\Shared\Exceptions\RequestException;
+use App\Infrastructure\Shared\Exceptions\NotSavedException;
+use App\Application\Status\UpdateBalance\UpdateBalanceService;
+use App\Application\Coin\UpdateCoinQuantity\UpdateCoinQuantityService;
 
 class GetCoinsBackController
 {
@@ -40,6 +40,11 @@ class GetCoinsBackController
         $this->updateCoinQuantityService = $updateCoinQuantityService;
     }
 
+    /**
+     * Returns the inserted coins back to the user
+     *
+     * @return JsonResponse
+     */
     public function getCoinsBack(): JsonResponse
     {
         $statusCode = 400;
@@ -47,22 +52,17 @@ class GetCoinsBackController
 
         try {
             $currentBalance = $this->getBalanceService->execute();
-            $coinsToReturn = $this->getCoinsBackService->execute(self::ALLOWED_RETURN_COINS, $currentBalance);
-
             if ($currentBalance === self::EMPTY_BALANCE) {
                 throw new RequestException(['balance' => 'The balance is empty. Please insert coins first']);
             }
 
+            $coinsToReturn = $this->getCoinsBackService->execute(self::ALLOWED_RETURN_COINS, $currentBalance);
             if (!$this->validateReturnedCoins($coinsToReturn, $currentBalance)) {
                 throw new RequestException(['coins' => 'The vending machine has not enough coins to return']);
             }
 
-            $areCoinsUpdated = $this->updateCoinsQuantity($coinsToReturn);
+            $this->updateCoinsQuantity($coinsToReturn);
             $isBalanceUpdated = $this->updateBalanceService->execute(self::EMPTY_BALANCE);
-
-            if (!$areCoinsUpdated) {
-                throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
-            }
 
             if (!$isBalanceUpdated) {
                 throw new NotSavedException(['balance' => 'The inserted balance has not been updated']);
@@ -91,7 +91,7 @@ class GetCoinsBackController
      * @param array $coinsToReturn
      * @return boolean
      */
-    private function updateCoinsQuantity(array $coinsToReturn): bool
+    private function updateCoinsQuantity(array $coinsToReturn): void
     {
         foreach ($coinsToReturn as $coinValue => $coinQuantityToReturn) {
             $isUpdated = $this->updateCoinQuantityService->execute($coinValue, $coinQuantityToReturn);
@@ -100,8 +100,6 @@ class GetCoinsBackController
                 throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
             }
         }
-
-        return true;
     }
 
     /**
