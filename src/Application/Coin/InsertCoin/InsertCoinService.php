@@ -2,6 +2,7 @@
 
 namespace App\Application\Coin\InsertCoin;
 
+use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
 use App\Domain\Coin\Coin;
 use App\Domain\Coin\CoinValue;
 use App\Domain\Coin\CoinQuantity;
@@ -13,11 +14,14 @@ class InsertCoinService
     private const INITIAL_COIN_QUANTITY = 1;
 
     private CoinRepositoryInterface $repository;
+    private GetCoinByValueService $getCoinByValueService;
 
     public function __construct(
-        CoinRepositoryInterface $repository
+        CoinRepositoryInterface $repository,
+        GetCoinByValueService $getCoinByValueService
     ) {
         $this->repository = $repository;
+        $this->getCoinByValueService = $getCoinByValueService;
     }
 
     /**
@@ -32,20 +36,49 @@ class InsertCoinService
         $isOperationDone = false;
         $quantity = (!empty($request->getQuantity())) ? $request->getQuantity() : self::INITIAL_COIN_QUANTITY;
         $coinQuantity = new CoinQuantity($quantity);
-        $coinValue = new CoinValue($request->getCoin());
-        $coin = $this->repository->getCoinByValue($coinValue);
+
+        $coin = $this->getCoinByValueService->execute($request->getCoin());
 
         if (empty($coin)) {
-            $coin = new Coin($coinValue, $coinQuantity);
-            $isOperationDone = $this->repository->saveCoin($coin);
+            $coinValue = new CoinValue($request->getCoin());
+            $isOperationDone = $this->createNewCoin($coinValue, $coinQuantity);
         } else {
-            $coin = \reset($coin);
-            $coinId = $coin->getCoinId();
-            $currentCoinQuantity = $coin->getCoinQuantity();
-            $coinQuantity->setValue($currentCoinQuantity->getValue() + $coinQuantity->getValue());
-            $isOperationDone = $this->repository->updateCoinQuantity($coinId, $coinQuantity);
+            $isOperationDone = $this->updateCoinQuantityt(\reset($coin), $coinQuantity);
         }
 
         return $isOperationDone;
+    }
+
+    /**
+     * Creates a new coin
+     *
+     * @param CoinValue $coinValue
+     * @param CoinQuantity $coinQuantity
+     * @return boolean
+     */
+    private function createNewCoin(CoinValue $coinValue, CoinQuantity $coinQuantity): bool
+    {
+        return $this->repository->saveCoin(
+            new Coin(
+                $coinValue,
+                $coinQuantity
+            )
+        );
+    }
+
+    /**
+     * Updates the coin quantity
+     *
+     * @param Coin $coin
+     * @param CoinQuantity $coinQuantity
+     * @return boolean
+     */
+    private function updateCoinQuantityt(Coin $coin, CoinQuantity $coinQuantity): bool
+    {
+        $coinId = $coin->getCoinId();
+        $currentCoinQuantity = $coin->getCoinQuantity();
+        $coinQuantity->setValue($currentCoinQuantity->getValue() + $coinQuantity->getValue());
+
+        return $this->repository->updateCoinQuantity($coinId, $coinQuantity);
     }
 }
