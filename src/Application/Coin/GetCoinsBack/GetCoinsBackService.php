@@ -4,6 +4,7 @@ namespace App\Application\Coin\GetCoinsBack;
 
 use App\Domain\Coin\CoinValue;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
+use InvalidArgumentException;
 
 class GetCoinsBackService
 {
@@ -24,6 +25,11 @@ class GetCoinsBackService
      */
     public function execute(array $allowedReturnCoins, float $balance): array
     {
+
+        if (empty($allowedReturnCoins)) {
+            throw new InvalidArgumentException('The allowed return coins empty.');
+        }
+
         $coinsToReturn = [];
 
         foreach ($allowedReturnCoins as $returnCoinValue) {
