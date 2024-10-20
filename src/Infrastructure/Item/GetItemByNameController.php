@@ -77,6 +77,13 @@ class GetItemByNameController
             $this->setRequestData($requestQueryData);
 
             $item = $this->getItemValue($this->insertItemRequest);
+
+            if (empty($item)) {
+                throw new RequestException(['item_name' => 'The item does not exist. Please contact the service team.']);
+            }
+
+            $item = \reset($item);
+
             $itemName = $item['name'];
             $itemQuantity = $item['quantity'];
             $itemPrice = $item['price'];
@@ -135,8 +142,7 @@ class GetItemByNameController
      */
     private function getItemValue(InsertItemRequest $requestQuery): array
     {
-        $items = $this->getItemByNameService->execute($requestQuery);
-        return \reset($items);
+        return $this->getItemByNameService->execute($requestQuery);
     }
 
     /**
