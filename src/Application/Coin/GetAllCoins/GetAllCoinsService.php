@@ -2,16 +2,21 @@
 
 namespace App\Application\Coin\GetAllCoins;
 
+use App\Application\Coin\Adapters\CoinAdapter;
+use App\Domain\Coin\Coin;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
 
 class GetAllCoinsService
 {
     private CoinRepositoryInterface $repository;
+    private CoinAdapter $adapter;
 
     public function __construct(
-        CoinRepositoryInterface $repository
+        CoinRepositoryInterface $repository,
+        CoinAdapter $adapter
     ) {
         $this->repository = $repository;
+        $this->adapter = $adapter;
     }
 
     /**
@@ -21,18 +26,11 @@ class GetAllCoinsService
      */
     public function execute(): array
     {
-        $coins = $this->repository->getAllCoins();
-        $coinsToReturn = [];
-
-        foreach ($coins as $coin) {
-            $coinValue = $coin->getCoinValue();
-            $coinQuantity = $coin->getCoinQuantity();
-            $coinsToReturn[] = [
-                'value' => \number_format($coinValue->getValue(), 2),
-                'quantity' => $coinQuantity->getValue()
-            ];
-        }
-
-        return $coinsToReturn;
+        return \array_map(
+            function (Coin $coin) {
+                return $this->adapter->adapt($coin);
+            },
+            $this->repository->getAllCoins()
+        );
     }
 }
