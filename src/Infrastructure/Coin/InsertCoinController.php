@@ -10,6 +10,8 @@ use App\Application\Status\GetBalance\GetBalanceService;
 use App\Infrastructure\Shared\ValidateRequestDataService;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Application\Status\InsertBalance\InsertBalanceService;
+use App\Infrastructure\Shared\Exceptions\NotSavedException;
+use App\Infrastructure\Shared\Exceptions\RequestException;
 
 class InsertCoinController
 {
@@ -57,10 +59,16 @@ class InsertCoinController
             $isCoinSaved = $this->insertCoinService->execute($this->request);
             $isBalanceSaved = $this->insertBalanceService->execute($this->request);
 
-            if ($isCoinSaved && $isBalanceSaved) {
-                $statusCode = 200;
-                $responseMessage = 'Coin has been inserted correctly';
+            if (!$isCoinSaved) {
+                throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
             }
+
+            if (!$isBalanceSaved) {
+                throw new NotSavedException(['balance' => 'The inserted balance has not been saved']);
+            }
+
+            $statusCode = 200;
+            $responseMessage = 'Coin has been inserted correctly';
         } catch (Exception $e) {
             $responseMessage = $e->getMessage();
         }
@@ -84,6 +92,10 @@ class InsertCoinController
      */
     private function setRequestData(array $requestBody): void
     {
+        if (empty($requestBody['coin'])) {
+            throw new RequestException(['coin' => 'Coin must be a valid value']);
+        }
+
         $this->request->setCoin($requestBody['coin']);
     }
 }

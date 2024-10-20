@@ -8,6 +8,8 @@ use App\Application\Status\GetBalance\GetBalanceService;
 use App\Application\Coin\GetCoinsBack\GetCoinsBackService;
 use App\Application\Coin\UpdateCoinQuantity\UpdateCoinQuantityService;
 use App\Application\Status\UpdateBalance\UpdateBalanceService;
+use App\Infrastructure\Shared\Exceptions\NotSavedException;
+use App\Infrastructure\Shared\Exceptions\RequestException;
 
 class GetCoinsBackController
 {
@@ -48,21 +50,28 @@ class GetCoinsBackController
             $coinsToReturn = $this->getCoinsBackService->execute(self::ALLOWED_RETURN_COINS, $currentBalance);
 
             if ($currentBalance === self::EMPTY_BALANCE) {
-                $responseMessage = 'The balance is empty. Please insert coins first.';
-            } elseif (!$this->validateReturnedCoins($coinsToReturn, $currentBalance)) {
-                $coinsToReturn = [];
-                $responseMessage = 'The vending machine has not enough coins to return.';
-            } else {
-                $areCoinsUpdated = $this->updateCoinsQuantity($coinsToReturn);
-                $isBalanceUpdated = $this->updateBalanceService->execute(self::EMPTY_BALANCE);
-
-                if ($areCoinsUpdated && $isBalanceUpdated) {
-                    $statusCode = 200;
-                    $responseMessage = 'The entered balance ' .
-                        \number_format($currentBalance, 2) .
-                        ' has been returned successfully.';
-                }
+                throw new RequestException(['balance' => 'The balance is empty. Please insert coins first']);
             }
+
+            if (!$this->validateReturnedCoins($coinsToReturn, $currentBalance)) {
+                throw new RequestException(['coins' => 'The vending machine has not enough coins to return']);
+            }
+
+            $areCoinsUpdated = $this->updateCoinsQuantity($coinsToReturn);
+            $isBalanceUpdated = $this->updateBalanceService->execute(self::EMPTY_BALANCE);
+
+            if (!$areCoinsUpdated) {
+                throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
+            }
+
+            if (!$isBalanceUpdated) {
+                throw new NotSavedException(['balance' => 'The inserted balance has not been updated']);
+            }
+
+            $statusCode = 200;
+            $responseMessage = 'The entered balance ' .
+                \number_format($currentBalance, 2) .
+                ' has been returned successfully.';
         } catch (Exception $e) {
             $responseMessage = $e->getMessage();
         }
@@ -88,7 +97,7 @@ class GetCoinsBackController
             $isUpdated = $this->updateCoinQuantityService->execute($coinValue, $coinQuantityToReturn);
 
             if (!$isUpdated) {
-                return false;
+                throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
             }
         }
 
