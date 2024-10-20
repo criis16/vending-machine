@@ -2,16 +2,17 @@
 
 namespace App\Application\Status\GetBalance;
 
-use App\Domain\Status\Repositories\StatusRepositoryInterface;
+use App\Application\Status\GetStatus\GetStatusService;
 
 class GetBalanceService
 {
     private const EMPTY_BALANCE = 0.0;
-    private StatusRepositoryInterface $repository;
+    private GetStatusService $getStatusService;
 
-    public function __construct(StatusRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        GetStatusService $getStatusService
+    ) {
+        $this->getStatusService = $getStatusService;
     }
 
     /**
@@ -21,13 +22,13 @@ class GetBalanceService
      */
     public function execute(): float
     {
-        $status = $this->repository->getStatus();
+        $status = $this->getStatusService->execute();
 
         if (empty($status)) {
             return self::EMPTY_BALANCE;
         }
 
         $statusResult = \reset($status);
-        return $statusResult->getStatusBalance()->getValue();
+        return $statusResult['balance'];
     }
 }

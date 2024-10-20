@@ -2,17 +2,23 @@
 
 namespace App\Application\Status\UpdateBalance;
 
-use App\Domain\Status\StatusBalance;
-use App\Domain\Status\Repositories\StatusRepositoryInterface;
 use InvalidArgumentException;
+use App\Domain\Status\StatusBalance;
+use App\Application\Status\GetStatus\GetStatusService;
+use App\Domain\Status\Repositories\StatusRepositoryInterface;
+use App\Domain\Status\StatusId;
 
 class UpdateBalanceService
 {
     private StatusRepositoryInterface $repository;
+    private GetStatusService $getStatusService;
 
-    public function __construct(StatusRepositoryInterface $repository)
-    {
+    public function __construct(
+        StatusRepositoryInterface $repository,
+        GetStatusService $getStatusService
+    ) {
         $this->repository = $repository;
+        $this->getStatusService = $getStatusService;
     }
 
     /**
@@ -23,14 +29,14 @@ class UpdateBalanceService
      */
     public function execute(float $balance): bool
     {
-        $currenStatus = $this->repository->getStatus();
+        $currenStatus = $this->getStatusService->execute();
 
         if (empty($currenStatus)) {
             throw new InvalidArgumentException('No status balance found in the database. Please insert coins first.');
         }
 
         $statusBalance = new StatusBalance($balance);
-        $statusId = \reset($currenStatus)->getStatusId();
+        $statusId = new StatusId(\reset($currenStatus)['id']);
         return $this->repository->updateStatusBalance($statusId, $statusBalance);
     }
 }
