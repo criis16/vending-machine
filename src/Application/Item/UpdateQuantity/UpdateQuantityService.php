@@ -33,7 +33,9 @@ class UpdateQuantityService
         $items = $this->getItemByNameService->execute($request);
 
         if (empty($items)) {
-            throw new InvalidArgumentException('The item with that name does not exist.');
+            throw new InvalidArgumentException(
+                'The requested item with does not exist. Please contact the service team.'
+            );
         }
 
         $item = \reset($items);

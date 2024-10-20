@@ -30,11 +30,19 @@ class GetItemByNameService
      */
     public function execute(InsertItemRequest $request): array
     {
-        $itemName = new ItemName($request->getName());
+        $name = $request->getName();
+
+        if (empty($name)) {
+            throw new InvalidArgumentException('The item name must be a valid value');
+        }
+
+        $itemName = new ItemName($name);
         $items = $this->repository->getItemByName($itemName);
 
         if (empty($items)) {
-            throw new InvalidArgumentException('The item with that name does not exist.');
+            throw new InvalidArgumentException(
+                'The requested item does not exist. Please contact the service team.'
+            );
         }
 
         return \array_map(

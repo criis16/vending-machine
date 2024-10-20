@@ -165,7 +165,7 @@ class GetItemByNameController
     {
         if ($currentBalance < $itemPrice) {
             throw new RequestException(
-                ['current_balance' => 'The balance is not enough. Please insert more coins.']
+                ['current_balance' => 'The balance is not enough. Please insert coins.']
             );
         }
     }
