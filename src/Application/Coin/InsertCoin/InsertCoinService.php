@@ -31,21 +31,51 @@ class InsertCoinService
     ): bool {
         $isOperationDone = false;
         $quantity = (!empty($request->getQuantity())) ? $request->getQuantity() : self::INITIAL_COIN_QUANTITY;
+
         $coinQuantity = new CoinQuantity($quantity);
         $coinValue = new CoinValue($request->getCoin());
+
         $coin = $this->repository->getCoinByValue($coinValue);
 
         if (empty($coin)) {
-            $coin = new Coin($coinValue, $coinQuantity);
-            $isOperationDone = $this->repository->saveCoin($coin);
+            $isOperationDone = $this->createNewCoin($coinValue, $coinQuantity);
         } else {
-            $coin = \reset($coin);
-            $coinId = $coin->getCoinId();
-            $currentCoinQuantity = $coin->getCoinQuantity();
-            $coinQuantity->setValue($currentCoinQuantity->getValue() + $coinQuantity->getValue());
-            $isOperationDone = $this->repository->updateCoinQuantity($coinId, $coinQuantity);
+            $isOperationDone = $this->updateCoinQuantityt(\reset($coin), $coinQuantity);
         }
 
         return $isOperationDone;
+    }
+
+    /**
+     * Creates a new coin
+     *
+     * @param CoinValue $coinValue
+     * @param CoinQuantity $coinQuantity
+     * @return boolean
+     */
+    private function createNewCoin(CoinValue $coinValue, CoinQuantity $coinQuantity): bool
+    {
+        return $this->repository->saveCoin(
+            new Coin(
+                $coinValue,
+                $coinQuantity
+            )
+        );
+    }
+
+    /**
+     * Updates the coin quantity
+     *
+     * @param Coin $coin
+     * @param CoinQuantity $coinQuantity
+     * @return boolean
+     */
+    private function updateCoinQuantityt(Coin $coin, CoinQuantity $coinQuantity): bool
+    {
+        $coinId = $coin->getCoinId();
+        $currentCoinQuantity = $coin->getCoinQuantity();
+        $coinQuantity->setValue($currentCoinQuantity->getValue() + $coinQuantity->getValue());
+
+        return $this->repository->updateCoinQuantity($coinId, $coinQuantity);
     }
 }

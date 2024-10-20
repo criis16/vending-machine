@@ -33,8 +33,7 @@ class GetCoinsBackService
         $coinsToReturn = [];
 
         foreach ($allowedReturnCoins as $returnCoinValue) {
-            $coinValue = new CoinValue($returnCoinValue);
-            $coin = $this->repository->getCoinByValue($coinValue);
+            $coin = $this->findCoinByValue($returnCoinValue);
 
             if (empty($coin)) {
                 continue;
@@ -42,14 +41,28 @@ class GetCoinsBackService
 
             $coin = \reset($coin);
             $currentCoinQuantity = $coin->getCoinQuantity()->getValue();
+
             $coinsAmount = \intdiv($balance * 100, $returnCoinValue * 100);
             $coinsAmount = \min($coinsAmount, $currentCoinQuantity);
-
             $coinsToReturn[\number_format($returnCoinValue, 2)] = $coinsAmount;
+
             $balance -= $coinsAmount * $returnCoinValue;
             $balance = \round($balance, 2);
         }
 
         return $coinsToReturn;
+    }
+
+    /**
+     * Finds the coin by value
+     *
+     * @param float $coinValue
+     * @return array
+     */
+    private function findCoinByValue(float $coinValue): array
+    {
+        return $this->repository->getCoinByValue(
+            new CoinValue($coinValue)
+        );
     }
 }
