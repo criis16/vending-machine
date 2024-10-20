@@ -2,16 +2,21 @@
 
 namespace App\Application\Item\GetAllItems;
 
+use App\Application\Item\Adapters\ItemAdapter;
+use App\Domain\Item\Item;
 use App\Domain\Item\Repositories\ItemRepositoryInterface;
 
 class GetAllItemsService
 {
     private ItemRepositoryInterface $repository;
+    private ItemAdapter $adapter;
 
     public function __construct(
-        ItemRepositoryInterface $repository
+        ItemRepositoryInterface $repository,
+        ItemAdapter $adapter
     ) {
         $this->repository = $repository;
+        $this->adapter = $adapter;
     }
 
     /**
@@ -21,19 +26,12 @@ class GetAllItemsService
      */
     public function execute(): array
     {
-        $items = $this->repository->getAllItems();
-        $itemsToReturn = [];
 
-        foreach ($items as $item) {
-            $itemName = $item->getItemName();
-            $itemQuantity = $item->getItemQuantity();
-            $itemsToReturn[] = [
-                'name' => $itemName->getValue(),
-                'quantity' => $itemQuantity->getValue(),
-                'price' => $item->getItemPrice()->getValue()
-            ];
-        }
-
-        return $itemsToReturn;
+        return \array_map(
+            function (Item $item) {
+                return $this->adapter->adapt($item);
+            },
+            $this->repository->getAllItems()
+        );
     }
 }
