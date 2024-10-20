@@ -2,7 +2,6 @@
 
 namespace App\Application\Item\GetItemByName;
 
-
 use App\Domain\Item\Item;
 use App\Domain\Item\ItemName;
 use InvalidArgumentException;
