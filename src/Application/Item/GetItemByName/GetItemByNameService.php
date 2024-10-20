@@ -39,12 +39,6 @@ class GetItemByNameService
         $itemName = new ItemName($name);
         $items = $this->repository->getItemByName($itemName);
 
-        if (empty($items)) {
-            throw new InvalidArgumentException(
-                'The requested item does not exist. Please contact the service team.'
-            );
-        }
-
         return \array_map(
             function (Item $item) {
                 return $this->adapter->adapt($item);

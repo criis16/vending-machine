@@ -4,8 +4,8 @@ namespace App\Domain\Coin\Repositories;
 
 use App\Domain\Coin\Coin;
 use App\Domain\Coin\CoinId;
-use App\Domain\Coin\CoinQuantity;
 use App\Domain\Coin\CoinValue;
+use App\Domain\Coin\CoinQuantity;
 
 interface CoinRepositoryInterface
 {
