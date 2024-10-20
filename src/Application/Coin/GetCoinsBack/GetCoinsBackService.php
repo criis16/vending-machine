@@ -2,18 +2,18 @@
 
 namespace App\Application\Coin\GetCoinsBack;
 
-use App\Domain\Coin\CoinValue;
+use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
 use InvalidArgumentException;
 
 class GetCoinsBackService
 {
-    private CoinRepositoryInterface $repository;
+    private GetCoinByValueService $getCoinByValueService;
 
     public function __construct(
-        CoinRepositoryInterface $repository
+        GetCoinByValueService $getCoinByValueService
     ) {
-        $this->repository = $repository;
+        $this->getCoinByValueService = $getCoinByValueService;
     }
 
     /**
@@ -33,7 +33,7 @@ class GetCoinsBackService
         $coinsToReturn = [];
 
         foreach ($allowedReturnCoins as $returnCoinValue) {
-            $coin = $this->findCoinByValue($returnCoinValue);
+            $coin = $this->getCoinByValueService->execute($returnCoinValue);
 
             if (empty($coin)) {
                 continue;
@@ -51,18 +51,5 @@ class GetCoinsBackService
         }
 
         return $coinsToReturn;
-    }
-
-    /**
-     * Finds the coin by value
-     *
-     * @param float $coinValue
-     * @return array
-     */
-    private function findCoinByValue(float $coinValue): array
-    {
-        return $this->repository->getCoinByValue(
-            new CoinValue($coinValue)
-        );
     }
 }
