@@ -26,7 +26,6 @@ class GetAllItemsService
      */
     public function execute(): array
     {
-
         return \array_map(
             function (Item $item) {
                 return $this->adapter->adapt($item);
