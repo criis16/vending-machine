@@ -38,14 +38,16 @@ class InsertBalanceService
 
         $isOperationDone = false;
         $currenStatus = $this->getStatusService->execute();
-        $statusBalance = new StatusBalance($request->getCoin());
 
         if (empty($currenStatus)) {
-            $isOperationDone = $this->createNewStatus($statusBalance->getValue());
+            $isOperationDone = $this->createNewStatus($request->getCoin());
         } else {
             $currenStatus = \reset($currenStatus);
-            $currenStatus = $this->createStatus($currenStatus['balance'], $currenStatus['id']);
-            $isOperationDone = $this->updateStatusBalance($currenStatus, $statusBalance);
+            $isOperationDone = $this->updateStatusBalance(
+                $currenStatus['id'],
+                $currenStatus['balance'],
+                $request->getCoin()
+            );
         }
 
         return $isOperationDone;
@@ -88,17 +90,18 @@ class InsertBalanceService
     /**
      * Updates the status balance
      *
-     * @param Status $status
-     * @param StatusBalance $statusBalance
+     * @param int $statusId
+     * @param float $currentStatusBalance
+     * @param float $newBalance
      * @return boolean
      */
     private function updateStatusBalance(
-        Status $status,
-        StatusBalance $statusBalance
+        int $currentStatusId,
+        float $currentStatusBalance,
+        float $newBalance
     ): bool {
-        $statusId = $status->getStatusId();
-        $currentBalance = $status->getStatusBalance();
-        $currentBalance->setValue($currentBalance->getValue() + $statusBalance->getValue());
+        $statusId = new StatusId($currentStatusId);
+        $currentBalance = new StatusBalance($currentStatusBalance + $newBalance);
         return $this->repository->updateStatusBalance($statusId, $currentBalance);
     }
 }
