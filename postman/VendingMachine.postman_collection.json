@@ -1,0 +1,121 @@
+{
+	"info": {
+		"_postman_id": "1145bfbb-f81a-476c-8b76-6a3f53eacdd5",
+		"name": "Vending Machine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28856486"
+	},
+	"item": [
+		{
+			"name": "Service",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"coins\": {\r\n        \"0.05\": 20,\r\n        \"0.10\": 20,\r\n        \"0.25\": 20,\r\n        \"1.00\": 20\r\n    },\r\n    \"items\": {\r\n        \"Water\": 20,\r\n        \"Juice\": 20,\r\n        \"Soda\": 20\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/service",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"service"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert Coin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "coin",
+							"value": "0.1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/insert_coin",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"insert_coin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Return inserted coins",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "localhost:8000/return_coins",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"return_coins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Select item",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "localhost:8000/item?item_name=water",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"item"
+					],
+					"query": [
+						{
+							"key": "item_name",
+							"value": "water"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
