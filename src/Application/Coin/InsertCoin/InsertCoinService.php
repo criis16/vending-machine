@@ -4,6 +4,7 @@ namespace App\Application\Coin\InsertCoin;
 
 use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
 use App\Domain\Coin\Coin;
+use App\Domain\Coin\CoinId;
 use App\Domain\Coin\CoinValue;
 use App\Domain\Coin\CoinQuantity;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
@@ -34,16 +35,21 @@ class InsertCoinService
         InsertCoinRequest $request
     ): bool {
         $isOperationDone = false;
-        $quantity = (!empty($request->getQuantity())) ? $request->getQuantity() : self::INITIAL_COIN_QUANTITY;
-        $coinQuantity = new CoinQuantity($quantity);
+        $coinValue = $request->getCoin();
+        $quantity = $request->getQuantity();
+        $quantity = (!empty($quantity)) ? $quantity : self::INITIAL_COIN_QUANTITY;
 
-        $coin = $this->getCoinByValueService->execute($request->getCoin());
+        $coin = $this->getCoinByValueService->execute($coinValue);
 
         if (empty($coin)) {
-            $coinValue = new CoinValue($request->getCoin());
-            $isOperationDone = $this->createNewCoin($coinValue, $coinQuantity);
+            $isOperationDone = $this->createNewCoin($coinValue, $quantity);
         } else {
-            $isOperationDone = $this->updateCoinQuantityt(\reset($coin), $coinQuantity);
+            $coin = \reset($coin);
+            $isOperationDone = $this->updateCoinQuantityt(
+                $coin->getCoinId()->getValue(),
+                $coin->getCoinQuantity()->getValue(),
+                $quantity
+            );
         }
 
         return $isOperationDone;
@@ -52,16 +58,16 @@ class InsertCoinService
     /**
      * Creates a new coin
      *
-     * @param CoinValue $coinValue
-     * @param CoinQuantity $coinQuantity
+     * @param float $coinValue
+     * @param integer $coinQuantity
      * @return boolean
      */
-    private function createNewCoin(CoinValue $coinValue, CoinQuantity $coinQuantity): bool
+    private function createNewCoin(float $coinValue, int $coinQuantity): bool
     {
         return $this->repository->saveCoin(
             new Coin(
-                $coinValue,
-                $coinQuantity
+                new CoinValue($coinValue),
+                new CoinQuantity($coinQuantity)
             )
         );
     }
@@ -69,16 +75,18 @@ class InsertCoinService
     /**
      * Updates the coin quantity
      *
-     * @param Coin $coin
-     * @param CoinQuantity $coinQuantity
+     * @param float $coinId
+     * @param integer $coinQuantity
+     * @param integer $newCoinQuantity
      * @return boolean
      */
-    private function updateCoinQuantityt(Coin $coin, CoinQuantity $coinQuantity): bool
-    {
-        $coinId = $coin->getCoinId();
-        $currentCoinQuantity = $coin->getCoinQuantity();
-        $coinQuantity->setValue($currentCoinQuantity->getValue() + $coinQuantity->getValue());
-
+    private function updateCoinQuantityt(
+        float $coinId,
+        int $coinQuantity,
+        int $newCoinQuantity
+    ): bool {
+        $coinId = new CoinId($coinId);
+        $coinQuantity = new CoinQuantity($coinQuantity + $newCoinQuantity);
         return $this->repository->updateCoinQuantity($coinId, $coinQuantity);
     }
 }
