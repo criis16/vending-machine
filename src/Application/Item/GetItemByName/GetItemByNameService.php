@@ -37,13 +37,12 @@ class GetItemByNameService
         }
 
         $itemName = new ItemName($name);
-        $items = $this->repository->getItemByName($itemName);
 
         return \array_map(
             function (Item $item) {
                 return $this->adapter->adapt($item);
             },
-            $items
+            $this->repository->getItemByName($itemName)
         );
     }
 }

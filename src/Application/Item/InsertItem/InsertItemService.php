@@ -41,23 +41,27 @@ class InsertItemService
     public function execute(
         InsertItemRequest $request
     ): bool {
-        if (empty($request->getName())) {
+        $itemName = $request->getName();
+        if (empty($itemName)) {
             throw new InvalidArgumentException('The item name cannot be empty.');
         }
 
+        $itemQuantity = $request->getQuantity();
         $isOperationDone = false;
-        $quantity = (!empty($request->getQuantity())) ? $request->getQuantity() : self::INITIAL_ITEM_QUANTITY;
-        $price = (!empty($request->getPrice())) ? $request->getPrice() : self::INITIAL_ITEM_PRICE[$request->getName()];
-        $itemQuantity = new ItemQuantity($quantity);
-
+        $quantity = (!empty($itemQuantity)) ? $itemQuantity : self::INITIAL_ITEM_QUANTITY;
         $item = $this->getItemByNameService->execute($request);
 
         if (empty($item)) {
-            $isOperationDone = $this->createNewItem($request->getName(), $price, $quantity);
+            $itemPrice = $request->getPrice();
+            $price = (!empty($itemPrice)) ? $itemPrice : self::INITIAL_ITEM_PRICE[$itemName];
+            $isOperationDone = $this->createNewItem($itemName, $price, $quantity);
         } else {
             $item = \reset($item);
-            $item = $this->createItem($item['name'], $item['price'], $item['quantity'], $item['id']);
-            $isOperationDone = $this->updateItemQuantity($item, $itemQuantity);
+            $isOperationDone = $this->updateItemQuantity(
+                $item['id'],
+                $item['quantity'],
+                $quantity
+            );
         }
 
         return $isOperationDone;
@@ -117,12 +121,12 @@ class InsertItemService
      * @return boolean
      */
     private function updateItemQuantity(
-        Item $item,
-        ItemQuantity $itemQuantity
+        int $itemId,
+        int $currentQuantity,
+        int $newQuantity
     ): bool {
-        $itemId = $item->getItemId();
-        $currentItemQuantity = $item->getItemQuantity();
-        $itemQuantity->setValue($currentItemQuantity->getValue() + $itemQuantity->getValue());
+        $itemId = new ItemId($itemId);
+        $itemQuantity = new ItemQuantity($currentQuantity + $newQuantity);
         return $this->repository->updateItemQuantity($itemId, $itemQuantity);
     }
 }
