@@ -32,13 +32,14 @@ class UpdateCoinQuantityService
         $coin = $this->getCoinByValueService->execute($value);
 
         if (empty($coin)) {
-            throw new InvalidArgumentException('No coin found with the given value' . $value);
+            throw new InvalidArgumentException('No coin found with the given value ' . $value);
         }
 
         $coin = \reset($coin);
         $coinId = $coin->getCoinId();
-        $coinQuantity = new CoinQuantity($quantity);
-        $coinQuantity->setValue($coin->getCoinQuantity()->getValue() - $coinQuantity->getValue());
+        $coinQuantity = new CoinQuantity(
+            $coin->getCoinQuantity()->getValue() - $quantity
+        );
         return $this->repository->updateCoinQuantity($coinId, $coinQuantity);
     }
 }

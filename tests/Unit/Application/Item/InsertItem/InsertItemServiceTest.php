@@ -58,13 +58,13 @@ class InsertItemServiceTest extends TestCase
         $request = $this->createMock(InsertItemRequest::class);
         $request->expects(self::once())
             ->method('getName')
-            ->willReturn($itemNameValue, $itemNameValue, $itemNameValue);
+            ->willReturn($itemNameValue);
         $request->expects(self::once())
             ->method('getQuantity')
-            ->willReturn($itemQuantityValue, $itemQuantityValue);
+            ->willReturn($itemQuantityValue);
         $request->expects(self::once())
             ->method('getPrice')
-            ->willReturn($itemPriceValue, $itemPriceValue);
+            ->willReturn($itemPriceValue);
 
         $this->getItemByNameService->expects(self::once())
             ->method('execute')
@@ -95,10 +95,10 @@ class InsertItemServiceTest extends TestCase
         $request = $this->createMock(InsertItemRequest::class);
         $request->expects(self::once())
             ->method('getName')
-            ->willReturn($itemNameValue, $itemNameValue);
+            ->willReturn($itemNameValue);
         $request->expects(self::once())
             ->method('getQuantity')
-            ->willReturn($insertItemQuantityValue, $insertItemQuantityValue);
+            ->willReturn($insertItemQuantityValue);
 
         $this->getItemByNameService->expects(self::once())
             ->method('execute')

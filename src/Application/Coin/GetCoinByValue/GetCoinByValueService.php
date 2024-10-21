@@ -24,10 +24,6 @@ class GetCoinByValueService
      */
     public function execute(float $coinValue): array
     {
-
-        if (!\is_numeric($coinValue)) {
-            throw new InvalidArgumentException('The coin value is not valid.');
-        }
         return $this->repository->getCoinByValue(
             new CoinValue($coinValue)
         );

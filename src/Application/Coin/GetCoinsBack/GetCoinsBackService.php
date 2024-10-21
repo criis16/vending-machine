@@ -3,7 +3,6 @@
 namespace App\Application\Coin\GetCoinsBack;
 
 use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
-use App\Domain\Coin\Repositories\CoinRepositoryInterface;
 use InvalidArgumentException;
 
 class GetCoinsBackService
