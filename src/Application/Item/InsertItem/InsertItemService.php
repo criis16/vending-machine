@@ -116,8 +116,9 @@ class InsertItemService
     /**
      * Updates the item quantity
      *
-     * @param Item $item
-     * @param ItemQuantity $itemQuantity
+     * @param integer $itemId
+     * @param integer $currentQuantity
+     * @param integer $newQuantity
      * @return boolean
      */
     private function updateItemQuantity(
