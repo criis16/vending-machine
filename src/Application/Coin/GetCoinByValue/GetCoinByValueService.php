@@ -4,7 +4,6 @@ namespace App\Application\Coin\GetCoinByValue;
 
 use App\Domain\Coin\CoinValue;
 use App\Domain\Coin\Repositories\CoinRepositoryInterface;
-use InvalidArgumentException;
 
 class GetCoinByValueService
 {
