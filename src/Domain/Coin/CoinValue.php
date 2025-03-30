@@ -11,7 +11,7 @@ class CoinValue
     private const TWENTY_FIVE_CENTS_COIN_VALUE = 0.25;
     private const ONE_EURO_COIN_VALUE = 1.00;
 
-    private const ALLOWED_COIN_VALUES = [
+    public const ALLOWED_COIN_VALUES = [
         self::FIVE_CENTS_COIN_VALUE,
         self::TEN_CENTS_COIN_VALUE,
         self::TWENTY_FIVE_CENTS_COIN_VALUE,

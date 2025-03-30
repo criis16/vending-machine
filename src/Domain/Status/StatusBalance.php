@@ -4,7 +4,7 @@ namespace App\Domain\Status;
 
 class StatusBalance
 {
-    private const ZERO_BALANCE = 0.0;
+    public const ZERO_BALANCE = 0.0;
 
     private float $balance;
 
