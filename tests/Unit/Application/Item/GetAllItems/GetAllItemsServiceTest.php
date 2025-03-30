@@ -72,7 +72,7 @@ class GetAllItemsServiceTest extends TestCase
     private static function simpleCase(): array
     {
         $item = new Item(
-            new ItemName('an item name'),
+            new ItemName('water'),
             new ItemQuantity(10),
             new ItemPrice(1.65)
         );
@@ -91,7 +91,7 @@ class GetAllItemsServiceTest extends TestCase
     private static function multipleCase(): array
     {
         $item = new Item(
-            new ItemName('an item name'),
+            new ItemName('water'),
             new ItemQuantity(10),
             new ItemPrice(1.65)
         );

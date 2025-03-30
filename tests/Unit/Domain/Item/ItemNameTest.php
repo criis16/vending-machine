@@ -12,9 +12,18 @@ class ItemNameTest extends TestCase
 
     public function testCreateItemName(): void
     {
-        $itemNameValue = 'an item name';
+        $itemNameValue = 'water';
         $this->sut = new ItemName($itemNameValue);
         $this->assertEquals($itemNameValue, $this->sut->getValue());
+    }
+
+    public function testCreateItemNameWithInvalidNameThrowsInvalidArgumentException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid item name invalid. Allowed item names are: Water, Juice, Soda');
+
+        $itemNameValue = 'invalid';
+        $this->sut = new ItemName($itemNameValue);
     }
 
     public function testCreateItemNameThrowsInvalidArgumentException(): void

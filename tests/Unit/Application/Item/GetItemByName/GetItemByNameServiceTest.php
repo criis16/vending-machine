@@ -15,7 +15,7 @@ use App\Application\Item\GetItemByName\GetItemByNameService;
 
 class GetItemByNameServiceTest extends TestCase
 {
-    private const ITEM_NAME = 'an item name';
+    private const ITEM_NAME = 'water';
 
     private GetItemByNameService $sut;
 
