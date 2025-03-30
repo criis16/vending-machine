@@ -59,7 +59,7 @@ class EntityItemAdapterTest extends TestCase
     private static function simpleCase(): array
     {
         $entityItemIdValue = 23;
-        $entityItemNameValue = 'an item name';
+        $entityItemNameValue = 'water';
         $entityItemQuantityValue = 10;
         $entityItemPriceValue = 1.65;
 

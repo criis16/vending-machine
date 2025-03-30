@@ -28,7 +28,7 @@ class CreateItemServiceTest extends TestCase
 
     public function testExecuteWorksCorrectly(): void
     {
-        $itemNameValue = 'an item name';
+        $itemNameValue = 'water';
         $itemPriceValue = 0.65;
         $itemQuantityValue = 10;
 

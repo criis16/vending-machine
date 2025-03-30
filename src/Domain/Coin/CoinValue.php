@@ -18,6 +18,12 @@ class CoinValue
         self::ONE_EURO_COIN_VALUE,
     ];
 
+    public const ALLOWED_RETURN_COIN_VALUES = [
+        self::FIVE_CENTS_COIN_VALUE,
+        self::TEN_CENTS_COIN_VALUE,
+        self::TWENTY_FIVE_CENTS_COIN_VALUE
+    ];
+
     private float $value;
 
     public function __construct(float $value)

@@ -3,12 +3,12 @@
 namespace App\Application\Coin\GetCoinsBack;
 
 use InvalidArgumentException;
-use App\Domain\Coin\CoinValue;
 use App\Domain\Status\StatusBalance;
 use App\Application\Coin\Exceptions\CoinNotSavedException;
 use App\Application\Coin\Exceptions\CoinsNotReturnException;
 use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
 use App\Application\Coin\UpdateCoinQuantity\UpdateCoinQuantityService;
+use App\Domain\Coin\CoinValue;
 
 class GetCoinsBackService
 {
@@ -31,9 +31,9 @@ class GetCoinsBackService
      * @param float $balance
      * @return array
      */
-    public function execute(float $balance): array
+    public function execute(float $balance, array $allowedCoinValues = CoinValue::ALLOWED_COIN_VALUES): array
     {
-        $coinsToReturn = $this->getCoinsQuantities($balance);
+        $coinsToReturn = $this->getCoinsQuantities($allowedCoinValues, $balance);
 
         if (!$this->validateReturnedCoins($coinsToReturn, $balance)) {
             throw new CoinsNotReturnException('The vending machine has not enough coins to return');
@@ -50,11 +50,11 @@ class GetCoinsBackService
      * @param float $balance
      * @return array
      */
-    private function getCoinsQuantities(float $balance): array
+    private function getCoinsQuantities(array $allowedCoinValues, float $balance): array
     {
         $coinsToReturn = [];
 
-        foreach (CoinValue::ALLOWED_COIN_VALUES as $returnCoinValue) {
+        foreach ($allowedCoinValues as $returnCoinValue) {
             $coin = $this->getCoinByValueService->execute($returnCoinValue);
 
             if (empty($coin)) {
