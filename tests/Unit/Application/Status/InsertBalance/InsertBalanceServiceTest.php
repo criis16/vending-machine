@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Application\Status\GetStatus;
 
+use App\Domain\Status\Status;
 use InvalidArgumentException;
 use App\Domain\Status\StatusId;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +12,7 @@ use App\Application\Status\GetStatus\GetStatusService;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Domain\Status\Repositories\StatusRepositoryInterface;
 use App\Application\Status\InsertBalance\InsertBalanceService;
-use App\Domain\Status\Status;
+use App\Application\Status\Exceptions\BalanceNotSavedException;
 
 class InsertBalanceServiceTest extends TestCase
 {
@@ -70,7 +71,7 @@ class InsertBalanceServiceTest extends TestCase
             ->with($status)
             ->willReturn(true);
 
-        $this->assertTrue($this->sut->execute($request));
+        $this->sut->execute($request);
     }
 
     public function testExecuteUpdateBalanceCorrectly(): void
@@ -102,6 +103,40 @@ class InsertBalanceServiceTest extends TestCase
             ->with($statusId, $statusBalance)
             ->willReturn(true);
 
-        $this->assertTrue($this->sut->execute($request));
+        $this->sut->execute($request);
+    }
+
+    public function testExecuteUpdateBalanceThrowsBalanceNotSavedException(): void
+    {
+        $this->expectException(BalanceNotSavedException::class);
+        $this->expectExceptionMessage('The given balance has not been saved');
+        $insertCoinValue = 1.00;
+        $currentBalanceValue = 1.50;
+        $updatedBalanceValue = $currentBalanceValue + $insertCoinValue;
+
+        /** @var InsertCoinRequest&MockObject */
+        $request = $this->createMock(InsertCoinRequest::class);
+        $request->expects(self::exactly(2))
+            ->method('getCoin')
+            ->willReturn($insertCoinValue, $insertCoinValue);
+
+        $existingStatus = [
+            'balance' => $currentBalanceValue,
+            'id' => 1
+        ];
+
+        $this->getStatusService->expects(self::once())
+            ->method('execute')
+            ->willReturn([$existingStatus]);
+
+        $statusId = new StatusId($existingStatus['id']);
+        $statusBalance = new StatusBalance($updatedBalanceValue);
+
+        $this->repository->expects(self::once())
+            ->method('updateStatusBalance')
+            ->with($statusId, $statusBalance)
+            ->willReturn(false);
+
+        $this->sut->execute($request);
     }
 }

@@ -9,6 +9,7 @@ use App\Domain\Status\StatusBalance;
 use App\Application\Status\GetStatus\GetStatusService;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Domain\Status\Repositories\StatusRepositoryInterface;
+use App\Application\Status\Exceptions\BalanceNotSavedException;
 
 class InsertBalanceService
 {
@@ -31,7 +32,7 @@ class InsertBalanceService
      */
     public function execute(
         InsertCoinRequest $request
-    ): bool {
+    ): void {
         if (empty($request->getCoin())) {
             throw new InvalidArgumentException('The coin value is not valid.');
         }
@@ -50,7 +51,9 @@ class InsertBalanceService
             );
         }
 
-        return $isOperationDone;
+        if (!$isOperationDone) {
+            throw new BalanceNotSavedException('The given balance has not been saved');
+        }
     }
 
     /**
