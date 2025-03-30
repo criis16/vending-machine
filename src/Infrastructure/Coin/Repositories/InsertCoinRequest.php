@@ -8,8 +8,8 @@ class InsertCoinRequest
     private ?int $quantity;
 
     public function __construct(
-        float $coin = null,
-        int $quantity = null
+        ?float $coin = null,
+        ?int $quantity = null
     ) {
         $this->coin = $coin;
         $this->quantity = $quantity;

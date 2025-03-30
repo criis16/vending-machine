@@ -5,6 +5,9 @@ namespace App\Domain\Item;
 class ItemPrice
 {
     private const ZERO_PRICE = 0.0;
+    public const WATER_PRICE = 0.65;
+    public const JUICE_PRICE = 1.00;
+    public const SODA_PRICE = 1.50;
 
     private float $price;
 

@@ -2,7 +2,9 @@
 
 namespace Tests\Unit\Application\Coin\InsertCoin;
 
+use App\Domain\Coin\Coin;
 use PHPUnit\Framework\TestCase;
+use App\Domain\Coin\CoinQuantity;
 use PHPUnit\Framework\MockObject\MockObject;
 use App\Application\Coin\CreateCoin\CreateCoinService;
 use App\Application\Coin\InsertCoin\InsertCoinService;
@@ -97,6 +99,7 @@ class InsertCoinServiceTest extends TestCase
     {
         $inputCoinValue = 0.05;
         $inputCoinQuantity = 10;
+        $currentCoinQuantity = 20;
 
         /** @var InsertCoinRequest&MockObject */
         $request = $this->createMock(InsertCoinRequest::class);
@@ -107,23 +110,35 @@ class InsertCoinServiceTest extends TestCase
             ->method('getQuantity')
             ->willReturn($inputCoinQuantity);
 
+        $coinQuantity = $this->createMock(CoinQuantity::class);
+        $coinQuantity->expects(self::once())
+            ->method('getValue')
+            ->willReturn($currentCoinQuantity);
+
+        $coin = $this->createMock(Coin::class);
+        $coin->expects(self::once())
+            ->method('getCoinQuantity')
+            ->willReturn($coinQuantity);
+
         $this->getCoinByValueService->expects(self::once())
             ->method('execute')
             ->with($inputCoinValue)
-            ->willReturn(['a coin']);
+            ->willReturn([$coin]);
 
         $this->updateCoinQuantityService->expects(self::once())
             ->method('execute')
-            ->with($inputCoinValue, $inputCoinQuantity)
+            ->with($inputCoinValue, $currentCoinQuantity + $inputCoinQuantity)
             ->willReturn(true);
 
         $this->sut->execute($request);
     }
 
-    public function testExecuteUpdateCoinQuantityThrowsException(): void
+
+    public function testExecuteUpdateCoinQuantityThrowsCoinNotSavedException(): void
     {
         $inputCoinValue = 0.05;
         $inputCoinQuantity = 10;
+        $currentCoinQuantity = 20;
 
         $this->expectException(CoinNotSavedException::class);
         $this->expectExceptionMessage('The inserted coin has not been saved');
@@ -137,14 +152,24 @@ class InsertCoinServiceTest extends TestCase
             ->method('getQuantity')
             ->willReturn($inputCoinQuantity);
 
+        $coinQuantity = $this->createMock(CoinQuantity::class);
+        $coinQuantity->expects(self::once())
+            ->method('getValue')
+            ->willReturn($currentCoinQuantity);
+
+        $coin = $this->createMock(Coin::class);
+        $coin->expects(self::once())
+            ->method('getCoinQuantity')
+            ->willReturn($coinQuantity);
+
         $this->getCoinByValueService->expects(self::once())
             ->method('execute')
             ->with($inputCoinValue)
-            ->willReturn(['a coin']);
+            ->willReturn([$coin]);
 
         $this->updateCoinQuantityService->expects(self::once())
             ->method('execute')
-            ->with($inputCoinValue, $inputCoinQuantity)
+            ->with($inputCoinValue, $currentCoinQuantity + $inputCoinQuantity)
             ->willReturn(false);
 
         $this->sut->execute($request);

@@ -4,6 +4,12 @@ namespace App\Domain\Item;
 
 class Item
 {
+    public const ITEMS_INFO = [
+        ItemName::WATER_ITEM_NAME => ItemPrice::WATER_PRICE,
+        ItemName::JUICE_ITEM_NAME => ItemPrice::JUICE_PRICE,
+        ItemName::SODA_ITEM_NAME => ItemPrice::SODA_PRICE
+    ];
+
     private ItemId $itemId;
     private ItemName $itemName;
     private ItemQuantity $itemQuantity;

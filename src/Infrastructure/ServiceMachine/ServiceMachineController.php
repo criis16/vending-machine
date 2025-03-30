@@ -3,49 +3,43 @@
 namespace App\Infrastructure\ServiceMachine;
 
 use Exception;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Application\Coin\InsertCoin\InsertCoinService;
-use App\Application\Item\InsertItem\InsertItemService;
+use App\Application\Coin\InsertCoin\InsertCoinsService;
+use App\Application\Item\InsertItem\InsertItemsService;
 use App\Application\Coin\GetAllCoins\GetAllCoinsService;
 use App\Application\Item\GetAllItems\GetAllItemsService;
 use App\Infrastructure\Shared\ValidateRequestDataService;
-use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
-use App\Infrastructure\Item\Repositories\InsertItemRequest;
-use App\Infrastructure\Shared\Exceptions\NotSavedException;
-use App\Infrastructure\Shared\Exceptions\RequestException;
 
 class ServiceMachineController
 {
+    private const COINS = 'coins';
+    private const ITEMS = 'items';
+
     private const REQUIRED_BODY_FIELDS = [
-        'coins',
-        'items'
+        self::COINS,
+        self::ITEMS
     ];
 
     private ValidateRequestDataService $validator;
-    private InsertCoinRequest $insertCoinRequest;
-    private InsertCoinService $insertCoinService;
-    private InsertItemRequest $insertItemRequest;
-    private InsertItemService $insertItemService;
     private GetAllCoinsService $getAllCoinsService;
     private GetAllItemsService $getAllItemsService;
+    private InsertCoinsService $insertCoinsService;
+    private InsertItemsService $insertItemsService;
 
     public function __construct(
         ValidateRequestDataService $validator,
-        InsertCoinRequest $insertCoinRequest,
-        InsertCoinService $insertCoinService,
-        InsertItemRequest $insertItemRequest,
-        InsertItemService $insertItemService,
         GetAllCoinsService $getAllCoinsService,
-        GetAllItemsService $getAllItemsService
+        GetAllItemsService $getAllItemsService,
+        InsertCoinsService $insertCoinsService,
+        InsertItemsService $insertItemsService
     ) {
         $this->validator = $validator;
-        $this->insertCoinRequest = $insertCoinRequest;
-        $this->insertCoinService = $insertCoinService;
-        $this->insertItemRequest = $insertItemRequest;
-        $this->insertItemService = $insertItemService;
         $this->getAllCoinsService = $getAllCoinsService;
         $this->getAllItemsService = $getAllItemsService;
+        $this->insertCoinsService = $insertCoinsService;
+        $this->insertItemsService = $insertItemsService;
     }
 
     /**
@@ -66,8 +60,8 @@ class ServiceMachineController
                 \count(self::REQUIRED_BODY_FIELDS)
             );
 
-            $this->saveCoins($requestBody['coins']);
-            $this->saveItems($requestBody['items']);
+            $this->insertCoinsService->execute($requestBody[self::COINS]);
+            $this->insertItemsService->execute($requestBody[self::ITEMS]);
 
             $statusCode = 200;
             $responseMessage = 'The inserted coins and items have been saved successfully.';
@@ -88,52 +82,6 @@ class ServiceMachineController
     }
 
     /**
-     * Saves the given coins
-     *
-     * @param array $coins
-     * @return boolean
-     */
-    private function saveCoins(array $coins): void
-    {
-        foreach ($coins as $coinValue => $coinQuantity) {
-            if (empty($coinValue) || empty($coinQuantity)) {
-                throw new RequestException(['coins' => 'Coins must be a valid value']);
-            }
-
-            $this->insertCoinRequest->setCoin($coinValue);
-            $this->insertCoinRequest->setQuantity($coinQuantity);
-            $isCoinSaved = $this->insertCoinService->execute($this->insertCoinRequest);
-
-            if (!$isCoinSaved) {
-                throw new NotSavedException(['coins' => 'The inserted coins have not been saved']);
-            }
-        }
-    }
-
-    /**
-     * Saves the given items
-     *
-     * @param array $items
-     * @return boolean
-     */
-    private function saveItems(array $items): void
-    {
-        foreach ($items as $itemName => $itemQuantity) {
-            if (empty($itemName) || empty($itemQuantity)) {
-                throw new RequestException(['items' => 'Items must be a valid value']);
-            }
-
-            $this->insertItemRequest->setName($itemName);
-            $this->insertItemRequest->setQuantity($itemQuantity);
-            $isItemSaved = $this->insertItemService->execute($this->insertItemRequest);
-
-            if (!$isItemSaved) {
-                throw new NotSavedException(['items' => 'The inserted items have not been saved']);
-            }
-        }
-    }
-
-    /**
      * Returns the global response message of the status machine
      *
      * @param array $coins
@@ -143,11 +91,11 @@ class ServiceMachineController
     private function getStatusResponseMessage(array $coins, array $items): string
     {
         if (empty($coins)) {
-            throw new RequestException(['coins' => 'There are no coins']);
+            throw new InvalidArgumentException('There are no coins');
         }
 
         if (empty($items)) {
-            throw new RequestException(['items' => 'There are no items']);
+            throw new InvalidArgumentException('There are no items');
         }
 
         $coinsMessage = 'Coins: ' . $this->getCoinsResponseMessage($coins);

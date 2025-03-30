@@ -4,7 +4,6 @@ namespace Tests\Unit\Application\Item\GetItemByName;
 
 use App\Domain\Item\Item;
 use App\Domain\Item\ItemName;
-use InvalidArgumentException;
 use App\Domain\Item\ItemPrice;
 use PHPUnit\Framework\TestCase;
 use App\Domain\Item\ItemQuantity;
@@ -35,19 +34,6 @@ class GetItemByNameServiceTest extends TestCase
             $this->repository,
             $this->adapter
         );
-    }
-
-    public function testExecuteThrowsExceptionWhenEmptyName(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The item name must be a valid value');
-
-        /** @var InsertItemRequest&MockObject */
-        $request = $this->createMock(InsertItemRequest::class);
-        $request->expects(self::once())
-            ->method('getName')
-            ->willReturn(null);
-        $this->sut->execute($request);
     }
 
     /**
