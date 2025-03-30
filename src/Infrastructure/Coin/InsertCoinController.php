@@ -10,13 +10,12 @@ use App\Application\Status\GetBalance\GetBalanceService;
 use App\Infrastructure\Shared\ValidateRequestDataService;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Application\Status\InsertBalance\InsertBalanceService;
-use App\Infrastructure\Shared\Exceptions\NotSavedException;
-use App\Infrastructure\Shared\Exceptions\RequestException;
 
 class InsertCoinController
 {
+    private const COIN_FIELD = 'coin';
     private const REQUIRED_BODY_FIELDS = [
-        'coin'
+        self::COIN_FIELD
     ];
 
     private InsertBalanceService $insertBalanceService;
@@ -47,37 +46,25 @@ class InsertCoinController
      */
     public function insertCoin(Request $request): JsonResponse
     {
-        $isCoinSaved = false;
-        $isBalanceSaved = false;
-        $statusCode = 400;
-
         try {
             $requestBody = $request->request->all();
             $this->validator->validate($requestBody, self::REQUIRED_BODY_FIELDS);
             $this->setRequestData($requestBody);
 
-            $isCoinSaved = $this->insertCoinService->execute($this->request);
-            if (!$isCoinSaved) {
-                throw new NotSavedException(['coin' => 'The inserted coin has not been saved']);
-            }
-
-            $isBalanceSaved = $this->insertBalanceService->execute($this->request);
-            if (!$isBalanceSaved) {
-                throw new NotSavedException(['balance' => 'The inserted balance has not been saved']);
-            }
+            $this->insertCoinService->execute($this->request);
+            $this->insertBalanceService->execute($this->request);
 
             $statusCode = 200;
             $responseMessage = 'Coin has been inserted correctly';
         } catch (Exception $e) {
+            $statusCode = 400;
             $responseMessage = $e->getMessage();
         }
-
-        $currentBalance = $this->getBalanceService->execute();
 
         return new JsonResponse(
             [
                 'message' => $responseMessage,
-                'result' => 'The current balance is ' . \number_format($currentBalance, 2)
+                'result' => 'The current balance is ' . \number_format($this->getBalanceService->execute(), 2)
             ],
             $statusCode
         );
@@ -91,10 +78,6 @@ class InsertCoinController
      */
     private function setRequestData(array $requestBody): void
     {
-        if (empty($requestBody['coin'])) {
-            throw new RequestException(['coin' => 'Coin must be a valid value']);
-        }
-
-        $this->request->setCoin($requestBody['coin']);
+        $this->request->setCoin($requestBody[self::COIN_FIELD]);
     }
 }

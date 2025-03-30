@@ -37,7 +37,7 @@ services:
     App\Infrastructure\Coin\GetCoinsBackController:
         tags: ["controller.service_arguments"]
         arguments:
-            $getBalanceService: '@App\Application\Status\GetBalance\GetBalanceService'
+            $getCurrentBalanceService: '@App\Application\Status\GetBalance\GetCurrentBalanceService'
 
     App\Infrastructure\ServiceMachine\ServiceMachineController:
         tags: ["controller.service_arguments"]
