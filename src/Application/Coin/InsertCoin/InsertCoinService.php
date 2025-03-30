@@ -46,7 +46,12 @@ class InsertCoinService
         if (empty($coin)) {
             $isOperationDone = $this->createCoinService->execute($coinValue, $quantity);
         } else {
-            $isOperationDone = $this->updateCoinQuantityService->execute($coinValue, $quantity);
+            $coin = \reset($coin);
+            $currentCoinQuantity = $coin->getCoinQuantity()->getValue();
+            $isOperationDone = $this->updateCoinQuantityService->execute(
+                $coinValue,
+                $currentCoinQuantity + $quantity
+            );
         }
 
         if (!$isOperationDone) {
