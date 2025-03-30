@@ -2,6 +2,7 @@
 
 namespace App\Application\Status\UpdateBalance;
 
+use App\Application\Status\Exceptions\BalanceNotSavedException;
 use InvalidArgumentException;
 use App\Domain\Status\StatusId;
 use App\Domain\Status\StatusBalance;
@@ -27,8 +28,9 @@ class UpdateBalanceService
      * @param float $balance
      * @return boolean
      */
-    public function execute(float $balance): bool
-    {
+    public function execute(
+        float $balance = StatusBalance::ZERO_BALANCE
+    ): void {
         $currenStatus = $this->getStatusService->execute();
 
         if (empty($currenStatus)) {
@@ -37,6 +39,10 @@ class UpdateBalanceService
 
         $statusBalance = new StatusBalance($balance);
         $statusId = new StatusId(\reset($currenStatus)['id']);
-        return $this->repository->updateStatusBalance($statusId, $statusBalance);
+        $isStatusUpdated = $this->repository->updateStatusBalance($statusId, $statusBalance);
+
+        if (!$isStatusUpdated) {
+            throw new BalanceNotSavedException('The inserted balance has not been updated');
+        }
     }
 }

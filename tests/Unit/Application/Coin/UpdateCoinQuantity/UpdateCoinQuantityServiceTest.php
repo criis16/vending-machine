@@ -43,23 +43,12 @@ class UpdateCoinQuantityServiceTest extends TestCase
     {
         $inputCoinValue = 0.05;
         $inputCoinQuantity = 1;
-        $currenCoinQuantityValue = 10;
-        $updatedCoinQuantityValue = $currenCoinQuantityValue - $inputCoinQuantity;
 
         /** @var CoinId&MockObject */
         $currentCoinId = $this->createMock(CoinId::class);
 
-        /** @var CoinQuantity&MockObject */
-        $currenCoinQuantity = $this->createMock(CoinQuantity::class);
-        $currenCoinQuantity->expects(self::once())
-            ->method('getValue')
-            ->willReturn($currenCoinQuantityValue);
-
         /** @var Coin&MockObject */
         $coin = $this->createMock(Coin::class);
-        $coin->expects(self::once())
-            ->method('getCoinQuantity')
-            ->willReturn($currenCoinQuantity);
         $coin->expects(self::once())
             ->method('getCoinId')
             ->willReturn($currentCoinId);
@@ -69,7 +58,7 @@ class UpdateCoinQuantityServiceTest extends TestCase
             ->with($inputCoinValue)
             ->willReturn([$coin]);
 
-        $coinQuantity = new CoinQuantity($updatedCoinQuantityValue);
+        $coinQuantity = new CoinQuantity($inputCoinQuantity);
 
         $this->repository->expects(self::once())
             ->method('updateCoinQuantity')

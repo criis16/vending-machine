@@ -2,34 +2,37 @@
 
 namespace Tests\Unit\Application\Coin\InsertCoin;
 
-use App\Domain\Coin\Coin;
-use App\Domain\Coin\CoinId;
-use App\Domain\Coin\CoinValue;
 use PHPUnit\Framework\TestCase;
-use App\Domain\Coin\CoinQuantity;
 use PHPUnit\Framework\MockObject\MockObject;
+use App\Application\Coin\CreateCoin\CreateCoinService;
 use App\Application\Coin\InsertCoin\InsertCoinService;
-use App\Domain\Coin\Repositories\CoinRepositoryInterface;
+use App\Application\Coin\Exceptions\CoinNotSavedException;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
 use App\Application\Coin\GetCoinByValue\GetCoinByValueService;
+use App\Application\Coin\UpdateCoinQuantity\UpdateCoinQuantityService;
 
 class InsertCoinServiceTest extends TestCase
 {
     private InsertCoinService $sut;
 
-    /** @var CoinRepositoryInterface&MockObject */
-    private CoinRepositoryInterface $repository;
-
     /** @var GetCoinByValueService&MockObject */
     private GetCoinByValueService $getCoinByValueService;
+
+    /** @var CreateCoinService&MockObject */
+    private CreateCoinService $createCoinService;
+
+    /** @var UpdateCoinQuantityService&MockObject */
+    private UpdateCoinQuantityService $updateCoinQuantityService;
 
     protected function setUp(): void
     {
         $this->getCoinByValueService = $this->createMock(GetCoinByValueService::class);
-        $this->repository = $this->createMock(CoinRepositoryInterface::class);
+        $this->createCoinService = $this->createMock(CreateCoinService::class);
+        $this->updateCoinQuantityService = $this->createMock(UpdateCoinQuantityService::class);
         $this->sut = new InsertCoinService(
-            $this->repository,
-            $this->getCoinByValueService
+            $this->getCoinByValueService,
+            $this->createCoinService,
+            $this->updateCoinQuantityService
         );
     }
 
@@ -52,25 +55,21 @@ class InsertCoinServiceTest extends TestCase
             ->with($inputCoinValue)
             ->willReturn([]);
 
-        $coinValue = new CoinValue($inputCoinValue);
-        $coinQuantity = new CoinQuantity($inputCoinQuantity);
-        $coin = new Coin($coinValue, $coinQuantity);
-
-        $this->repository->expects(self::once())
-            ->method('saveCoin')
-            ->with($coin)
+        $this->createCoinService->expects(self::once())
+            ->method('execute')
+            ->with($inputCoinValue, $inputCoinQuantity)
             ->willReturn(true);
 
-        $this->assertTrue($this->sut->execute($request));
+        $this->sut->execute($request);
     }
 
-    public function testExecuteUpdateCoinQuantityCorrectly(): void
+    public function testExecuteInsertsCoinThrowsException(): void
     {
         $inputCoinValue = 0.05;
         $inputCoinQuantity = 10;
-        $currentCoinIdValue = 23;
-        $currenCoinQuantityValue = 10;
-        $updatedQuantityValue = $currenCoinQuantityValue + $inputCoinQuantity;
+
+        $this->expectException(CoinNotSavedException::class);
+        $this->expectExceptionMessage('The inserted coin has not been saved');
 
         /** @var InsertCoinRequest&MockObject */
         $request = $this->createMock(InsertCoinRequest::class);
@@ -81,40 +80,73 @@ class InsertCoinServiceTest extends TestCase
             ->method('getQuantity')
             ->willReturn($inputCoinQuantity);
 
-        /** @var CoinId&MockObject */
-        $currentCoinId = $this->createMock(CoinId::class);
-        $currentCoinId->expects(self::once())
-            ->method('getValue')
-            ->willReturn($currentCoinIdValue);
+        $this->getCoinByValueService->expects(self::once())
+            ->method('execute')
+            ->with($inputCoinValue)
+            ->willReturn([]);
 
-        /** @var CoinQuantity&MockObject */
-        $currenCoinQuantity = $this->createMock(CoinQuantity::class);
-        $currenCoinQuantity->expects(self::once())
-            ->method('getValue')
-            ->willReturn($currenCoinQuantityValue);
+        $this->createCoinService->expects(self::once())
+            ->method('execute')
+            ->with($inputCoinValue, $inputCoinQuantity)
+            ->willReturn(false);
 
-        /** @var Coin&MockObject */
-        $coin = $this->createMock(Coin::class);
-        $coin->expects(self::once())
-            ->method('getCoinQuantity')
-            ->willReturn($currenCoinQuantity);
-        $coin->expects(self::once())
-            ->method('getCoinId')
-            ->willReturn($currentCoinId);
+        $this->sut->execute($request);
+    }
+
+    public function testExecuteUpdateCoinQuantityCorrectly(): void
+    {
+        $inputCoinValue = 0.05;
+        $inputCoinQuantity = 10;
+
+        /** @var InsertCoinRequest&MockObject */
+        $request = $this->createMock(InsertCoinRequest::class);
+        $request->expects(self::once())
+            ->method('getCoin')
+            ->willReturn($inputCoinValue);
+        $request->expects(self::once())
+            ->method('getQuantity')
+            ->willReturn($inputCoinQuantity);
 
         $this->getCoinByValueService->expects(self::once())
             ->method('execute')
             ->with($inputCoinValue)
-            ->willReturn([$coin]);
+            ->willReturn(['a coin']);
 
-        $coinId = new CoinId($currentCoinIdValue);
-        $coinQuantity = new CoinQuantity($updatedQuantityValue);
-
-        $this->repository->expects(self::once())
-            ->method('updateCoinQuantity')
-            ->with($coinId, $coinQuantity)
+        $this->updateCoinQuantityService->expects(self::once())
+            ->method('execute')
+            ->with($inputCoinValue, $inputCoinQuantity)
             ->willReturn(true);
 
-        $this->assertTrue($this->sut->execute($request));
+        $this->sut->execute($request);
+    }
+
+    public function testExecuteUpdateCoinQuantityThrowsException(): void
+    {
+        $inputCoinValue = 0.05;
+        $inputCoinQuantity = 10;
+
+        $this->expectException(CoinNotSavedException::class);
+        $this->expectExceptionMessage('The inserted coin has not been saved');
+
+        /** @var InsertCoinRequest&MockObject */
+        $request = $this->createMock(InsertCoinRequest::class);
+        $request->expects(self::once())
+            ->method('getCoin')
+            ->willReturn($inputCoinValue);
+        $request->expects(self::once())
+            ->method('getQuantity')
+            ->willReturn($inputCoinQuantity);
+
+        $this->getCoinByValueService->expects(self::once())
+            ->method('execute')
+            ->with($inputCoinValue)
+            ->willReturn(['a coin']);
+
+        $this->updateCoinQuantityService->expects(self::once())
+            ->method('execute')
+            ->with($inputCoinValue, $inputCoinQuantity)
+            ->willReturn(false);
+
+        $this->sut->execute($request);
     }
 }

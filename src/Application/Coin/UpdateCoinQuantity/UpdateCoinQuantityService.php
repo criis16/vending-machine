@@ -37,9 +37,7 @@ class UpdateCoinQuantityService
 
         $coin = \reset($coin);
         $coinId = $coin->getCoinId();
-        $coinQuantity = new CoinQuantity(
-            $coin->getCoinQuantity()->getValue() - $quantity
-        );
+        $coinQuantity = new CoinQuantity($quantity);
         return $this->repository->updateCoinQuantity($coinId, $coinQuantity);
     }
 }

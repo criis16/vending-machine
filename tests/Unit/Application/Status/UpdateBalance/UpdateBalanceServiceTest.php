@@ -10,6 +10,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use App\Application\Status\GetStatus\GetStatusService;
 use App\Domain\Status\Repositories\StatusRepositoryInterface;
 use App\Application\Status\UpdateBalance\UpdateBalanceService;
+use App\Application\Status\Exceptions\BalanceNotSavedException;
 
 class UpdateBalanceServiceTest extends TestCase
 {
@@ -63,6 +64,33 @@ class UpdateBalanceServiceTest extends TestCase
             ->with($statusId, $statusBalance)
             ->willReturn(true);
 
-        $this->assertTrue($this->sut->execute($statusBalanceValue));
+        $this->sut->execute($statusBalanceValue);
+    }
+
+    public function testExecuteThrowsBalanceNotSavedException(): void
+    {
+        $this->expectException(BalanceNotSavedException::class);
+        $this->expectExceptionMessage('The inserted balance has not been updated');
+        $statusBalanceValue = 1.00;
+        $statusIdValue = 1;
+
+        $this->getStatusService->expects(self::once())
+            ->method('execute')
+            ->willReturn([
+                [
+                    'id' => $statusIdValue,
+                    'balance' => $statusBalanceValue
+                ]
+            ]);
+
+        $statusBalance = new StatusBalance($statusBalanceValue);
+        $statusId = new StatusId($statusIdValue);
+
+        $this->repository->expects(self::once())
+            ->method('updateStatusBalance')
+            ->with($statusId, $statusBalance)
+            ->willReturn(false);
+
+        $this->sut->execute($statusBalanceValue);
     }
 }
