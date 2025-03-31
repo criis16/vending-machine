@@ -17,6 +17,7 @@ class GetCurrentBalanceService
     /**
      * Returns the current balance
      *
+     * @throws EmptyBalanceException
      * @return float
      */
     public function execute(): float

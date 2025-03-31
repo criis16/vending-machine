@@ -2,12 +2,12 @@
 
 namespace App\Application\Status\UpdateBalance;
 
-use App\Application\Status\Exceptions\BalanceNotSavedException;
 use InvalidArgumentException;
 use App\Domain\Status\StatusId;
 use App\Domain\Status\StatusBalance;
 use App\Application\Status\GetStatus\GetStatusService;
 use App\Domain\Status\Repositories\StatusRepositoryInterface;
+use App\Application\Status\Exceptions\BalanceNotSavedException;
 
 class UpdateBalanceService
 {
@@ -26,6 +26,8 @@ class UpdateBalanceService
      * Updates the balance
      *
      * @param float $balance
+     * @throws BalanceNotSavedException
+     * @throws InvalidArgumentException
      * @return boolean
      */
     public function execute(

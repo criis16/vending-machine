@@ -30,6 +30,7 @@ class InsertBalanceService
      * Inserts a balance
      *
      * @param InsertCoinRequest $request
+     * @throws BalanceNotSavedException
      * @return boolean
      */
     public function execute(

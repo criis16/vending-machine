@@ -31,6 +31,7 @@ class InsertItemService
      * Inserts an item
      *
      * @param InsertItemRequest $request
+     * @throws ItemNotSavedException
      * @return boolean
      */
     public function execute(

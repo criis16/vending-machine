@@ -18,6 +18,14 @@ class CreateItemService
         $this->repository = $repository;
     }
 
+    /**
+     * Saves a new item with the given name, price, and quantity.
+     *
+     * @param string $name
+     * @param float $price
+     * @param integer $quantity
+     * @return boolean
+     */
     public function execute(
         string $name,
         float $price,

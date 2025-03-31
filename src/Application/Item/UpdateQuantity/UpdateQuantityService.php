@@ -27,6 +27,7 @@ class UpdateQuantityService
      *
      * @param InsertItemRequest $request
      * @param integer $quantity
+     * @throws InvalidArgumentException
      * @return boolean
      */
     public function execute(InsertItemRequest $request, int $quantity): bool

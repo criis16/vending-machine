@@ -46,6 +46,13 @@ class CoinValue
         return $this->value;
     }
 
+    /**
+     * Validates the coin value
+     *
+     * @param float $value
+     * @throws InvalidArgumentException
+     * @return void
+     */
     private function validate(float $value): void
     {
         if (!\in_array($value, self::ALLOWED_COIN_VALUES)) {

@@ -34,6 +34,13 @@ class SelectItemByNameService
         $this->getCoinsBackService = $getCoinsBackService;
     }
 
+    /**
+     * Executes the item selection process.
+     *
+     * @param InsertItemRequest $request
+     * @throws ItemsNotReturnException
+     * @return array
+     */
     public function execute(
         InsertItemRequest $request
     ): array {

@@ -104,19 +104,13 @@ class GetItemByNameController
         $message = '';
 
         foreach ($coinsToReturn as $coinValue => $coinQuantity) {
-            if ($coinQuantity === 0) {
+            if (empty($coinQuantity)) {
                 continue;
             }
 
             $message .= \str_repeat($coinValue . ', ', $coinQuantity);
         }
 
-        if (empty($message)) {
-            $message = self::EMPTY_RETURN_COINS;
-        } else {
-            $message = 'Coins returned: ' . \rtrim($message, ', ');
-        }
-
-        return $message;
+        return empty($message) ? self::EMPTY_RETURN_COINS : 'Coins returned: ' . \rtrim($message, ', ');
     }
 }

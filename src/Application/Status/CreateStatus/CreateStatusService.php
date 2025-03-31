@@ -16,7 +16,12 @@ class CreateStatusService
         $this->repository = $repository;
     }
 
-
+    /**
+     * Saves a new status with the given balance
+     *
+     * @param float $balance
+     * @return boolean
+     */
     public function execute(
         float $balance
     ): bool {

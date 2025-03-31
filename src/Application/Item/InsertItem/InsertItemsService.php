@@ -18,6 +18,13 @@ class InsertItemsService
         $this->insertItemService = $insertItemService;
     }
 
+    /**
+     * Inserts multiple items into the system.
+     *
+     * @param array $items
+     * @throws InvalidArgumentException
+     * @return void
+     */
     public function execute(
         array $items
     ): void {

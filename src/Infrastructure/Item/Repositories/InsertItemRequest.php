@@ -9,9 +9,9 @@ class InsertItemRequest
     private ?int $quantity;
 
     public function __construct(
-        string $name = null,
-        float $price = null,
-        int $quantity = null
+        ?string $name = null,
+        ?float $price = null,
+        ?int $quantity = null
     ) {
         $this->name = $name;
         $this->price = $price;

@@ -41,6 +41,7 @@ class ItemName
      * Validate the item name
      *
      * @param string $value
+     * @throws InvalidArgumentException
      * @return void
      */
     private function validate(string $value): void

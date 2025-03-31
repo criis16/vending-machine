@@ -50,8 +50,6 @@ class ServiceMachineController
      */
     public function serviceMachine(Request $request): JsonResponse
     {
-        $statusCode = 400;
-
         try {
             $requestBody = $request->toArray();
             $this->validator->validate(
@@ -67,6 +65,7 @@ class ServiceMachineController
             $responseMessage = 'The inserted coins and items have been saved successfully.';
         } catch (Exception $e) {
             $responseMessage = $e->getMessage();
+            $statusCode = 400;
         }
 
         $coins = $this->getAllCoinsService->execute();
@@ -86,6 +85,7 @@ class ServiceMachineController
      *
      * @param array $coins
      * @param array $items
+     * @throws InvalidArgumentException
      * @return string
      */
     private function getStatusResponseMessage(array $coins, array $items): string
