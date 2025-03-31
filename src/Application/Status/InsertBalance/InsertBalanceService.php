@@ -2,26 +2,28 @@
 
 namespace App\Application\Status\InsertBalance;
 
-use App\Domain\Status\Status;
-use InvalidArgumentException;
-use App\Domain\Status\StatusId;
-use App\Domain\Status\StatusBalance;
 use App\Application\Status\GetStatus\GetStatusService;
 use App\Infrastructure\Coin\Repositories\InsertCoinRequest;
-use App\Domain\Status\Repositories\StatusRepositoryInterface;
+use App\Application\Status\CreateStatus\CreateStatusService;
+use App\Application\Status\UpdateBalance\UpdateBalanceService;
 use App\Application\Status\Exceptions\BalanceNotSavedException;
 
 class InsertBalanceService
 {
-    private StatusRepositoryInterface $repository;
+    private const BALANCE_FIELD = 'balance';
+
     private GetStatusService $getStatusService;
+    private CreateStatusService $createStatusService;
+    private UpdateBalanceService $updateBalanceService;
 
     public function __construct(
-        StatusRepositoryInterface $repository,
-        GetStatusService $getStatusService
+        GetStatusService $getStatusService,
+        CreateStatusService $createStatusService,
+        UpdateBalanceService $updateBalanceService
     ) {
-        $this->repository = $repository;
         $this->getStatusService = $getStatusService;
+        $this->createStatusService = $createStatusService;
+        $this->updateBalanceService = $updateBalanceService;
     }
 
     /**
@@ -33,78 +35,21 @@ class InsertBalanceService
     public function execute(
         InsertCoinRequest $request
     ): void {
-        if (empty($request->getCoin())) {
-            throw new InvalidArgumentException('The coin value is not valid.');
-        }
-
         $isOperationDone = false;
+        $coinValue = $request->getCoin();
         $currenStatus = $this->getStatusService->execute();
 
         if (empty($currenStatus)) {
-            $isOperationDone = $this->createNewStatus($request->getCoin());
+            $isOperationDone = $this->createStatusService->execute($coinValue);
         } else {
-            $currenStatus = \reset($currenStatus);
-            $isOperationDone = $this->updateStatusBalance(
-                $currenStatus['id'],
-                $currenStatus['balance'],
-                $request->getCoin()
-            );
+            $currentStatus = \reset($currenStatus);
+            $currentStatusBalance = $currentStatus[self::BALANCE_FIELD];
+            $this->updateBalanceService->execute($currentStatusBalance + $coinValue);
+            $isOperationDone = true;
         }
 
         if (!$isOperationDone) {
             throw new BalanceNotSavedException('The given balance has not been saved');
         }
-    }
-
-    /**
-     * Crates a new status object
-     *
-     * @param float $balance
-     * @param integer|null $id
-     * @return Status
-     */
-    private function createStatus(
-        float $balance,
-        ?int $id = null
-    ): Status {
-        $statusBalance = new StatusBalance($balance);
-        $status = new Status($statusBalance);
-
-        if (!empty($id)) {
-            $status->setStatusId(new StatusId($id));
-        }
-
-        return $status;
-    }
-
-    /**
-     * Creates a new status in database
-     *
-     * @param float $balance
-     * @return boolean
-     */
-    private function createNewStatus(float $balance): bool
-    {
-        return $this->repository->saveStatus(
-            $this->createStatus($balance)
-        );
-    }
-
-    /**
-     * Updates the status balance
-     *
-     * @param int $statusId
-     * @param float $currentStatusBalance
-     * @param float $newBalance
-     * @return boolean
-     */
-    private function updateStatusBalance(
-        int $currentStatusId,
-        float $currentStatusBalance,
-        float $newBalance
-    ): bool {
-        $statusId = new StatusId($currentStatusId);
-        $currentBalance = new StatusBalance($currentStatusBalance + $newBalance);
-        return $this->repository->updateStatusBalance($statusId, $currentBalance);
     }
 }
