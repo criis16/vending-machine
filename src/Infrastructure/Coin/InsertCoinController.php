@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Coin;
 
 use Exception;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Application\Coin\InsertCoin\InsertCoinService;
@@ -78,6 +79,10 @@ class InsertCoinController
      */
     private function setRequestData(array $requestBody): void
     {
+        if (!\is_numeric($requestBody[self::COIN_FIELD])) {
+            throw new InvalidArgumentException('Coin must be a number');
+        }
+
         $this->request->setCoin($requestBody[self::COIN_FIELD]);
     }
 }

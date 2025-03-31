@@ -29,7 +29,7 @@ class InsertCoinsService
         array $coins
     ): void {
         foreach ($coins as $coinValue => $coinQuantity) {
-            if (empty($coinValue) || empty($coinQuantity)) {
+            if (empty($coinValue) || empty($coinQuantity) || !\is_numeric($coinValue) || !\is_numeric($coinQuantity)) {
                 throw new InvalidArgumentException(
                     'Something is wrong with the coins. Value:' . $coinValue . ' Quantity:' . $coinQuantity
                 );

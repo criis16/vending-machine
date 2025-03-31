@@ -29,7 +29,7 @@ class InsertItemsService
         array $items
     ): void {
         foreach ($items as $itemName => $itemQuantity) {
-            if (empty($itemName) || empty($itemQuantity)) {
+            if (empty($itemName) || empty($itemQuantity) || !\is_numeric($itemQuantity)) {
                 throw new InvalidArgumentException(
                     'Something is wrong with the items. Name:' . $itemName . ' Quantity:' . $itemQuantity
                 );
