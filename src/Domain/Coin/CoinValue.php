@@ -28,6 +28,10 @@ class CoinValue
 
     public function __construct(float $value)
     {
+        if (empty($value)) {
+            throw new InvalidArgumentException('The coin value is not valid.');
+        }
+
         $this->validate($value);
         $this->value = $value;
     }
