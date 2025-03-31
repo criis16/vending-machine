@@ -26,7 +26,7 @@ services:
     #Serivces definition
     App\Application\Status\InsertBalance\InsertBalanceService:
         arguments:
-            $repository: '@App\Infrastructure\Status\Repositories\DoctrineRepository'
+            $getStatusService: '@App\Application\Status\GetStatus\GetStatusService'
 
     #Controller definition
     App\Infrastructure\Coin\InsertCoinController:
