@@ -33,10 +33,15 @@ class GetCoinsBackService
      */
     public function execute(float $balance, array $allowedCoinValues = CoinValue::ALLOWED_COIN_VALUES): array
     {
+        \sort($allowedCoinValues);
         $coinsToReturn = $this->getCoinsQuantities($allowedCoinValues, $balance);
 
         if (!$this->validateReturnedCoins($coinsToReturn, $balance)) {
-            throw new CoinsNotReturnException('The vending machine has not enough coins to return');
+            \rsort($allowedCoinValues);
+            $coinsToReturn = $this->getCoinsQuantities($allowedCoinValues, $balance);
+            if (!$this->validateReturnedCoins($coinsToReturn, $balance)) {
+                throw new CoinsNotReturnException('The vending machine has not enough coins to return');
+            }
         }
 
         $this->updateCoinsQuantity($coinsToReturn);
